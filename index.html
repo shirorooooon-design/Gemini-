@@ -483,4 +483,19 @@
   }
 
   if ('serviceWorker' in navigator) {
-    const swCode = `self.addEventListener('fetch', function(e) {
+    const swCode = `self.addEventListener('fetch', function(e) {});`;
+    const blob = new Blob([swCode], { type: 'text/javascript' });
+    const swUrl = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(swUrl).catch(() => {});
+  }
+
+  scheduleNotification();
+
+  const defaultDeadline = new Date();
+  defaultDeadline.setDate(defaultDeadline.getDate() + 30);
+  document.getElementById('deadline').value = defaultDeadline.toISOString().split('T')[0];
+  render();
+</script>
+
+</body>
+</html>
