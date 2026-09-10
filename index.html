@@ -5,175 +5,200 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StudyFlow</title>
   
-  <!-- PWA用の設定 -->
-  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlN0dWR5RmxvdyIsCiAgInNob3J0X25hbWUiOiAiU3R1ZHlGbG93IiwKICAic3RhcnRfdXJsIjogIi4vIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMGYxNzJhIiwKICAidGhlbWVfY29sb3IiOiAiIzYzNjZmMSIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTAwIDEwMCc+PHJlY3Qgd2lkdGg9JzEwMCcgaGVpZ2h0PScxMDAnIHJ4PScyMCcgZmlsbD0nJTYzNjZmMScvPjx0ZXh0IHg9JzUwJyB5PSc2NScgZm9udC1zaXplPSc1MCcgdGV4dC1hbmNob3I9J21pZGRsZSc+📚PC90ZXh0Pjwvc3ZnPiIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIKICAgIH0KICBdCn0=">
-  <meta name="theme-color" content="#6366f1">
+  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlN0dWR5RmxvdyIsCiAgInNob3J0X25hbWUiOiAiU3R1ZHlGbG93IiwKICAic3RhcnRfdXJsIjogIi4vIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZjhmYWZjIiwKICAidGhlbWVfY29sb3IiOiAiIzRhNjlmYSIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTAwIDEwMCc+PHJlY3Qgd2lkdGg9JzEwMCcgaGVpZ2h0PScxMDAnIHJ4PScyMCcgZmlsbD0nIzRhNjlmYScvPjx0ZXh0IHg9JzUwJyB5PSc2NScgZm9udC1zaXplPSc1MCcgdGV4dC1hbmNob3I9J21pZGRsZSc+📚PC90ZXh0Pjwvc3ZnPiIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIKICAgIH0KICBdCn0=">
+  <meta name="theme-color" content="#4a69fa">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
-      --card-bg: rgba(30, 41, 59, 0.7);
-      --card-border: rgba(255, 255, 255, 0.1);
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --accent-primary: #6366f1;
+      --bg-color: #f4f6f9;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --primary: #4a69fa;
+      --primary-light: #eef2ff;
+      --border-color: #e2e8f0;
       --success: #10b981;
-      --success-light: rgba(16, 185, 129, 0.15);
+      --success-light: #ecfdf5;
       --danger: #ef4444;
-      --pace-light-bg: rgba(56, 189, 248, 0.2);
-      --pace-light-border: #38bdf8;
-      --pace-normal-bg: rgba(99, 102, 241, 0.2);
-      --pace-normal-border: #6366f1;
-      --pace-heavy-bg: rgba(236, 72, 153, 0.2);
-      --pace-heavy-border: #ec4899;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif; }
-    body { background: var(--bg-gradient); background-attachment: fixed; color: var(--text-main); min-height: 100vh; padding: 24px 16px; display: flex; justify-content: center; }
-    .app-container { width: 100%; max-width: 680px; }
-    
-    header { text-align: center; margin-bottom: 20px; }
-    header h1 { font-size: 1.8rem; font-weight: 700; background: linear-gradient(135deg, #a5b4fc 0%, #c084fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    body { background: var(--bg-color); color: var(--text-main); min-height: 100vh; padding-bottom: 80px; display: flex; justify-content: center; }
+    .app-container { width: 100%; max-width: 600px; padding: 16px; }
 
-    /* 通知設定エリア */
-    .notif-box {
-      background: rgba(99, 102, 241, 0.15);
-      border: 1px solid var(--accent-primary);
-      border-radius: 12px;
-      padding: 12px 16px;
-      margin-bottom: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-    .notif-title { font-size: 0.85rem; color: #a5b4fc; font-weight: 600; }
-    .notif-controls { display: flex; gap: 8px; align-items: center; }
-    .time-input {
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: var(--text-main);
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      outline: none;
-    }
-    .btn-notif { background: var(--accent-primary); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+    header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; padding-top: 8px; }
+    header .logo-icon { background: #fef3c7; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    header .title-sub { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+    header h1 { font-size: 1.2rem; font-weight: 700; color: var(--text-main); }
 
-    /* 今日の優先タスクエリア */
-    .hero-section {
-      background: rgba(30, 41, 59, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 2px solid var(--accent-primary);
-      border-radius: 20px;
-      padding: 20px;
-      margin-bottom: 24px;
-      box-shadow: 0 12px 32px rgba(99, 102, 241, 0.25);
-    }
-    
-    .section-title { font-size: 1.2rem; font-weight: 700; color: #ffffff; margin-bottom: 12px; }
+    /* タブ切り替え制御 */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
-    /* 一括ペースセレクター */
-    .global-pace-box { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px; margin-bottom: 16px; }
-    .pace-label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
-    .global-pace-options { display: flex; gap: 8px; }
-    .global-pace-btn { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(30, 41, 59, 0.6); color: var(--text-muted); font-size: 0.85rem; font-weight: 700; cursor: pointer; text-align: center; transition: all 0.2s; }
-    .global-pace-btn.active-light { background: var(--pace-light-bg); border-color: var(--pace-light-border); color: var(--pace-light-border); }
-    .global-pace-btn.active-normal { background: var(--pace-normal-bg); border-color: var(--pace-normal-border); color: #a5b4fc; }
-    .global-pace-btn.active-heavy { background: var(--pace-heavy-bg); border-color: var(--pace-heavy-border); color: var(--pace-heavy-border); }
+    /* カード・枠組み */
+    .card { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 16px; border: 1px solid var(--border-color); box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+    .card-subtitle { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+    .card-title { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+    .card-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px; }
 
-    .today-card { background: rgba(15, 23, 42, 0.7); border: 1px solid var(--card-border); border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px; }
-    .today-card:last-child { margin-bottom: 0; }
-    .today-header { display: flex; justify-content: space-between; align-items: center; }
-    .today-title { font-size: 1.1rem; font-weight: 700; color: #f1f5f9; }
-    .today-pages-badge { font-size: 1.1rem; font-weight: 700; color: #38bdf8; background: rgba(56, 189, 248, 0.1); padding: 4px 12px; border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.3); }
+    /* 今日のペース切り替えボタン */
+    .pace-options { display: flex; gap: 8px; }
+    .pace-btn { flex: 1; padding: 10px 4px; border-radius: 10px; border: 1px solid var(--border-color); background: #f8fafc; color: var(--text-muted); font-size: 0.8rem; font-weight: 700; cursor: pointer; text-align: center; }
+    .pace-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
 
-    .btn-complete { width: 100%; padding: 10px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); }
-    .completed-badge { text-align: center; padding: 8px; color: var(--success); font-weight: 600; background: var(--success-light); border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.9rem; }
+    /* 今日のタスクカード */
+    .today-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+    .today-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .today-title { font-size: 1rem; font-weight: 700; color: var(--text-main); }
+    .today-badge { font-size: 0.85rem; font-weight: 700; color: var(--primary); background: var(--primary-light); padding: 4px 10px; border-radius: 6px; }
+    .btn-complete { width: 100%; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
+    .completed-badge { text-align: center; padding: 8px; color: var(--success); font-weight: 700; background: var(--success-light); border-radius: 8px; font-size: 0.85rem; }
 
-    /* 管理エリア */
-    .card { background: var(--card-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--card-border); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+    /* フォーム項目 */
     .form-group { margin-bottom: 12px; }
-    label { display: block; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); margin-bottom: 4px; }
-    input { width: 100%; padding: 10px 12px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px; color: var(--text-main); font-size: 0.9rem; outline: none; }
+    label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+    input, select { width: 100%; padding: 12px; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); font-size: 0.9rem; outline: none; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .btn-primary { width: 100%; padding: 12px; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; margin-top: 6px; }
+    .btn-primary { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 8px; }
 
-    .manage-item { background: rgba(15, 23, 42, 0.5); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
-    .manage-header { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; margin-bottom: 6px; }
-    .btn-delete { background: none; border: none; color: #64748b; cursor: pointer; font-size: 1rem; }
-    .btn-delete:hover { color: var(--danger); }
-    .progress-bar-bg { background: rgba(15, 23, 42, 0.8); height: 6px; border-radius: 999px; overflow: hidden; margin: 6px 0; }
-    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%); }
+    /* 進捗管理 */
+    .manage-item { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+    .manage-header { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 8px; }
+    .btn-delete { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 1rem; }
+    .progress-bar-bg { background: #f1f5f9; height: 8px; border-radius: 999px; overflow: hidden; margin: 8px 0; }
+    .progress-bar-fill { height: 100%; background: var(--primary); border-radius: 999px; }
     .manage-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); }
 
-    .empty-state { text-align: center; color: var(--text-muted); padding: 20px 0; font-size: 0.9rem; }
+    /* 下部ナビゲーションバー */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 65px;
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      max-width: 600px;
+      margin: 0 auto;
+      z-index: 1000;
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      font-weight: 700;
+      cursor: pointer;
+      gap: 3px;
+    }
+    .nav-item .icon { font-size: 1.2rem; }
+    .nav-item.active { color: var(--primary); }
+
+    .empty-state { text-align: center; color: var(--text-muted); padding: 30px 0; font-size: 0.9rem; }
   </style>
 </head>
 <body>
 
 <div class="app-container">
   <header>
-    <h1>StudyFlow</h1>
+    <div class="logo-icon">🎓</div>
+    <div>
+      <div class="title-sub">STUDYFLOW</div>
+      <h1>毎日の勉強ナビ</h1>
+    </div>
   </header>
 
-  <!-- 自由な時間設定ができるリマインダーエリア -->
-  <div class="notif-box">
-    <span class="notif-title">🔔 毎日リマインダー</span>
-    <div class="notif-controls">
-      <input type="time" id="notifTime" class="time-input" value="20:00">
-      <button class="btn-notif" onclick="saveAndScheduleNotification()">保存</button>
-    </div>
-  </div>
-
-  <!-- 最上部：今日やるタスクエリア -->
-  <div class="hero-section">
-    <div class="section-title">🔥 今日の学習タスク</div>
-
-    <div class="global-pace-box">
-      <div class="pace-label">今日の気分・全体の学習量</div>
-      <div class="global-pace-options">
-        <button id="btnPaceLight" class="global-pace-btn" onclick="setGlobalPace('light')">🌙 少なめ</button>
-        <button id="btnPaceNormal" class="global-pace-btn" onclick="setGlobalPace('normal')">⚡️ 普通</button>
-        <button id="btnPaceHeavy" class="global-pace-btn" onclick="setGlobalPace('heavy')">🔥 多め</button>
+  <!-- タブ1: 今日 -->
+  <div id="tab-today" class="tab-content active">
+    <div class="card">
+      <div class="card-subtitle">TODAY'S CONDITION</div>
+      <div class="card-title">今日はどれくらいできそう？</div>
+      <div class="card-desc">気分や体調に合わせて選べます。少なめでも続けることが大切です。</div>
+      <div class="pace-options">
+        <button id="btnPaceLight" class="pace-btn" onclick="setGlobalPace('light')">少なめ</button>
+        <button id="btnPaceNormal" class="pace-btn" onclick="setGlobalPace('normal')">普通（基本）</button>
+        <button id="btnPaceHeavy" class="pace-btn" onclick="setGlobalPace('heavy')">多め</button>
       </div>
     </div>
 
+    <div class="card-subtitle" style="margin-left: 4px; margin-bottom: 8px;">DAILY PLAN</div>
     <div id="todayTaskList"></div>
   </div>
 
-  <div class="card">
-    <div class="section-title" style="font-size: 1rem; color: var(--text-muted);">📊 教材ごとの進捗状況</div>
+  <!-- タブ2: 進捗 -->
+  <div id="tab-progress" class="tab-content">
+    <div class="card-subtitle" style="margin-left: 4px; margin-bottom: 8px;">PROGRESS</div>
     <div id="manageList"></div>
   </div>
 
-  <div class="card">
-    <div class="section-title" style="font-size: 1rem; color: var(--text-muted);">＋ 教材を追加する</div>
-    <div class="form-group">
-      <label>教材名</label>
-      <input type="text" id="title" placeholder="例: システム英単語、数学チャート">
-    </div>
-    <div class="grid-2">
+  <!-- タブ3: 教材追加 -->
+  <div id="tab-add" class="tab-content">
+    <div class="card">
+      <div class="card-title">新しい教材を追加</div>
       <div class="form-group">
-        <label>現在のページ</label>
-        <input type="number" id="currentP" value="1" min="1">
+        <label>教材名</label>
+        <input type="text" id="title" placeholder="例: システム英単語">
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>現在のページ</label>
+          <input type="number" id="currentP" value="1" min="1">
+        </div>
+        <div class="form-group">
+          <label>目標ページ</label>
+          <input type="number" id="targetP" placeholder="例: 150">
+        </div>
       </div>
       <div class="form-group">
-        <label>目標ページ</label>
-        <input type="number" id="targetP" placeholder="例: 150">
+        <label>達成期限</label>
+        <input type="date" id="deadline">
       </div>
+      <button class="btn-primary" onclick="addSubject()">追加して計算する</button>
     </div>
-    <div class="form-group">
-      <label>達成期限</label>
-      <input type="date" id="deadline">
+  </div>
+
+  <!-- タブ4: 設定 -->
+  <div id="tab-settings" class="tab-content">
+    <div class="card">
+      <div class="card-title">🔔 リマインダー設定</div>
+      <div class="card-desc">指定した時間に毎日の学習タスクをお知らせします。</div>
+      <div class="form-group">
+        <label>通知時刻</label>
+        <input type="time" id="notifTime" value="20:00">
+      </div>
+      <button class="btn-primary" onclick="saveAndScheduleNotification()">設定を保存する</button>
     </div>
-    <button class="btn-primary" onclick="addSubject()">追加して計算する</button>
+  </div>
+</div>
+
+<!-- 下部ナビゲーションバー -->
+<div class="bottom-nav">
+  <div class="nav-item active" onclick="switchTab('today', this)">
+    <span class="icon">📝</span>
+    <span>今日</span>
+  </div>
+  <div class="nav-item" onclick="switchTab('progress', this)">
+    <span class="icon">📊</span>
+    <span>進捗</span>
+  </div>
+  <div class="nav-item" onclick="switchTab('add', this)">
+    <span class="icon">➕</span>
+    <span>追加</span>
+  </div>
+  <div class="nav-item" onclick="switchTab('settings', this)">
+    <span class="icon">⚙️</span>
+    <span>設定</span>
   </div>
 </div>
 
@@ -189,13 +214,19 @@
     localStorage.setItem('studyflow_global_pace', globalPace);
   }
 
+  function switchTab(tabName, el) {
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+    document.getElementById('tab-' + tabName).classList.add('active');
+    el.classList.add('active');
+  }
+
   function setGlobalPace(mode) {
     globalPace = mode;
     saveSubjects();
     render();
   }
 
-  /* ユーザーが設定した時間にリマインダーをセット */
   function scheduleNotification() {
     if (!("Notification" in window) || Notification.permission !== "granted") return;
     if (notifTimerId) clearTimeout(notifTimerId);
@@ -209,7 +240,7 @@
     scheduledTime.setHours(targetHour, targetMinute, 0, 0);
 
     if (now > scheduledTime) {
-      scheduledTime.setDate(scheduledTime.getDate() + 1); // 過ぎている場合は翌日の同時刻
+      scheduledTime.setDate(scheduledTime.getDate() + 1);
     }
 
     const timeUntilNotification = scheduledTime.getTime() - now.getTime();
@@ -236,7 +267,7 @@
         alert(`毎日 ${selectedTime} にリマインダーを設定しました！`);
         scheduleNotification();
       } else {
-        alert("通知が許可されませんでした。ブラウザの設定で通知を許可してください。");
+        alert("通知が許可されませんでした。");
       }
     });
   }
@@ -257,6 +288,9 @@
     render();
     document.getElementById('title').value = '';
     document.getElementById('targetP').value = '';
+    
+    // 追加完了後に進捗タブへ自動移動
+    switchTab('progress', document.querySelectorAll('.nav-item')[1]);
   }
 
   function deleteSubject(id) {
@@ -295,9 +329,9 @@
   }
 
   function updatePaceButtonsUI() {
-    document.getElementById('btnPaceLight').className = 'global-pace-btn' + (globalPace === 'light' ? ' active-light' : '');
-    document.getElementById('btnPaceNormal').className = 'global-pace-btn' + (globalPace === 'normal' ? ' active-normal' : '');
-    document.getElementById('btnPaceHeavy').className = 'global-pace-btn' + (globalPace === 'heavy' ? ' active-heavy' : '');
+    document.getElementById('btnPaceLight').className = 'pace-btn' + (globalPace === 'light' ? ' active' : '');
+    document.getElementById('btnPaceNormal').className = 'pace-btn' + (globalPace === 'normal' ? ' active' : '');
+    document.getElementById('btnPaceHeavy').className = 'pace-btn' + (globalPace === 'heavy' ? ' active' : '');
   }
 
   function render() {
@@ -309,8 +343,8 @@
     manageListEl.innerHTML = '';
 
     if (subjects.length === 0) {
-      todayListEl.innerHTML = '<div class="empty-state">登録された教材がありません。<br>一番下のフォームから追加しましょう！</div>';
-      manageListEl.innerHTML = '<div class="empty-state">データなし</div>';
+      todayListEl.innerHTML = '<div class="empty-state">登録された教材がありません。<br>「追加」タブから登録してみましょう！</div>';
+      manageListEl.innerHTML = '<div class="empty-state">登録された教材がありません。</div>';
       return;
     }
 
@@ -336,7 +370,7 @@
         todayItem.innerHTML = `
           <div class="today-header">
             <div class="today-title">${sub.title}</div>
-            <div class="today-pages-badge">p.${todayStartP} 〜 ${todayEndP} (${todayPages}p)</div>
+            <div class="today-badge">p.${todayStartP} 〜 ${todayEndP} (${todayPages}p)</div>
           </div>
           <button class="btn-complete" onclick="completeTodayTask(${sub.id}, ${todayPages})">完了する</button>
         `;
@@ -353,7 +387,7 @@
         <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${progressPercent}%"></div></div>
         <div class="manage-meta">
           <span>進捗: ${sub.currentP} / ${sub.targetP}p (${progressPercent}%)</span>
-          <span>残り ${remainingDays} 日 (期限: ${sub.deadline})</span>
+          <span>残り ${remainingDays} 日</span>
         </div>
       `;
       manageListEl.appendChild(manageItem);
