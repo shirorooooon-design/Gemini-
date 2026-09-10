@@ -72,7 +72,7 @@
     body { background: var(--bg-color); color: var(--text-main); min-height: 100vh; padding-bottom: 90px; display: flex; justify-content: center; }
     .app-container { width: 100%; max-width: 600px; padding: 16px; }
 
-    header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; padding-top: 8px; }
+    header { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; padding-top: 8px; }
     header .logo-icon { background: #fef3c7; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
     header .title-sub { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
     header h1 { font-size: 1.2rem; font-weight: 700; color: var(--text-main); }
@@ -82,17 +82,37 @@
     .tab-content.active { display: block; }
 
     /* カード・枠組み */
-    .card { position: relative; background: var(--card-bg); border-radius: var(--card-radius); padding: 20px; margin-bottom: 16px; border: 1px solid var(--border-color); box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-    
-    /* ネコ耳の装飾 */
-    .card::before {
-      content: '🐾';
-      display: var(--cat-ear-display);
-      position: absolute;
-      top: -12px;
-      right: 20px;
-      font-size: 1.1rem;
+    .card, .today-card, .manage-item { 
+      position: relative; 
+      background: var(--card-bg); 
+      border-radius: var(--card-radius); 
+      padding: 20px; 
+      margin-bottom: 24px; 
+      border: 2px solid var(--border-color); 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03); 
     }
+
+    /* 🐱 猫耳デザイン (猫テーマの時に表示) */
+    body.theme-cat .card::before, body.theme-cat .card::after,
+    body.theme-cat .today-card::before, body.theme-cat .today-card::after,
+    body.theme-cat .manage-item::before, body.theme-cat .manage-item::after {
+      content: '';
+      position: absolute;
+      top: -14px;
+      width: 28px;
+      height: 22px;
+      background: var(--card-bg);
+      border: 2px solid var(--border-color);
+      border-bottom: none;
+      border-radius: 16px 16px 0 0;
+      z-index: 1;
+    }
+    body.theme-cat .card::before,
+    body.theme-cat .today-card::before,
+    body.theme-cat .manage-item::before { left: 24px; transform: rotate(-15deg); }
+    body.theme-cat .card::after,
+    body.theme-cat .today-card::after,
+    body.theme-cat .manage-item::after { right: 24px; transform: rotate(15deg); }
 
     .card-subtitle { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
     .card-title { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
@@ -104,14 +124,51 @@
     .opt-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
 
     /* 今日のタスクカード */
-    .today-card { position: relative; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+    .today-card { padding: 16px; margin-bottom: 20px; }
     .today-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .today-title { font-size: 1rem; font-weight: 700; color: var(--text-main); }
     .today-badge { font-size: 0.85rem; font-weight: 700; color: var(--primary); background: var(--primary-light); padding: 4px 10px; border-radius: 6px; }
     
-    .action-group { display: flex; gap: 8px; }
-    .btn-complete { flex: 2; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: transform 0.1s; }
-    .btn-complete:active { transform: scale(0.98); }
+    .action-group { display: flex; gap: 8px; position: relative; }
+    
+    /* ボタン＆猫の手アニメーション容器 */
+    .btn-complete-wrap { position: relative; flex: 2; overflow: visible; }
+    
+    .btn-complete { 
+      width: 100%; 
+      padding: 10px; 
+      background: var(--primary); 
+      color: white; 
+      border: none; 
+      border-radius: 8px; 
+      font-size: 0.85rem; 
+      font-weight: 700; 
+      cursor: pointer; 
+      transition: transform 0.1s;
+    }
+    
+    /* 🐾 猫の手アニメーション要素 */
+    .cat-paw {
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px) scale(0.8);
+      font-size: 2.2rem;
+      pointer-events: none;
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 10;
+    }
+
+    /* 猫の手がぽちっと押すアニメーション */
+    .btn-complete-wrap.paws-down .cat-paw {
+      opacity: 1;
+      transform: translateX(-50%) translateY(18px) scale(1.1);
+    }
+    .btn-complete-wrap.paws-down .btn-complete {
+      transform: scale(0.92);
+    }
+
     .btn-partial { flex: 1; padding: 10px; background: var(--input-bg); color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
     
     .completed-box { text-align: center; padding: 12px; background: var(--success-light); border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.2); }
@@ -128,7 +185,7 @@
     .btn-primary { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 8px; }
 
     /* 進捗管理 */
-    .manage-item { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 12px; }
+    .manage-item { margin-bottom: 20px; }
     .manage-header { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 8px; }
     .btn-delete { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; }
     .progress-bar-bg { background: var(--input-bg); height: 8px; border-radius: 999px; overflow: hidden; margin: 8px 0; }
@@ -306,7 +363,7 @@
     }
 
     saveSubjects();
-    updateThemeButtonsUI();
+    render();
   }
 
   function updateThemeButtonsUI() {
@@ -315,13 +372,25 @@
     document.getElementById('btnThemeCat').className = 'opt-btn' + (currentTheme === 'cat' ? ' active' : '');
   }
 
+  /* 紙吹雪（ネコモード時は肉球とお魚） */
   function fireConfetti() {
     if (typeof confetti === 'function') {
-      confetti({
-        particleCount: 80,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
+      if (currentTheme === 'cat') {
+        const catShapes = [confetti.shapeFromText({ text: '🐾' }), confetti.shapeFromText({ text: '🐟' })];
+        confetti({
+          shapes: catShapes,
+          scalar: 2,
+          particleCount: 40,
+          spread: 80,
+          origin: { y: 0.6 }
+        });
+      } else {
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      }
     }
   }
 
@@ -409,6 +478,17 @@
       saveSubjects();
       render();
     }
+  }
+
+  /* 🐾 猫の手アニメーション付きタスク完了処理 */
+  function completeTodayTaskWithPaw(btnEl, id, pagesToStudy) {
+    const wrap = btnEl.parentElement;
+    wrap.classList.add('paws-down');
+
+    setTimeout(() => {
+      wrap.classList.remove('paws-down');
+      completeTodayTask(id, pagesToStudy);
+    }, 300);
   }
 
   function completeTodayTask(id, pagesToStudy) {
@@ -540,13 +620,17 @@
           </div>
         `;
       } else {
+        const btnText = currentTheme === 'cat' ? '目標達成だニャ！' : '目標達成！';
         todayItem.innerHTML = `
           <div class="today-header">
             <div class="today-title">${sub.title}</div>
             <div class="today-badge">p.${todayStartP} 〜 ${todayEndP} (${todayPages}p)</div>
           </div>
           <div class="action-group">
-            <button class="btn-complete" onclick="completeTodayTask(${sub.id}, ${todayPages})">${currentTheme === 'cat' ? '目標達成だニャ！' : '目標達成！'}</button>
+            <div class="btn-complete-wrap">
+              <span class="cat-paw">🐾</span>
+              <button class="btn-complete" onclick="completeTodayTaskWithPaw(this, ${sub.id}, ${todayPages})">${btnText}</button>
+            </div>
             <button class="btn-partial" onclick="partialCompleteTask(${sub.id}, ${todayStartP}, ${todayEndP})">ここまでやった</button>
           </div>
         `;
