@@ -40,18 +40,29 @@
     header { text-align: center; margin-bottom: 20px; }
     header h1 { font-size: 1.8rem; font-weight: 700; background: linear-gradient(135deg, #a5b4fc 0%, #c084fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-    /* 通知登録エリア */
+    /* 通知設定エリア */
     .notif-box {
       background: rgba(99, 102, 241, 0.15);
       border: 1px solid var(--accent-primary);
       border-radius: 12px;
-      padding: 12px;
+      padding: 12px 16px;
       margin-bottom: 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 10px;
     }
-    .notif-text { font-size: 0.85rem; color: #a5b4fc; font-weight: 600; }
+    .notif-title { font-size: 0.85rem; color: #a5b4fc; font-weight: 600; }
+    .notif-controls { display: flex; gap: 8px; align-items: center; }
+    .time-input {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text-main);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      outline: none;
+    }
     .btn-notif { background: var(--accent-primary); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
 
     /* 今日の優先タスクエリア */
@@ -112,10 +123,13 @@
     <h1>StudyFlow</h1>
   </header>
 
-  <!-- リマインダー通知の設定ボタン -->
-  <div class="notif-box" id="notifBox">
-    <span class="notif-text">🔔 毎日の学習リマインダーを設定</span>
-    <button class="btn-notif" onclick="requestNotification()">通知を許可</button>
+  <!-- 自由な時間設定ができるリマインダーエリア -->
+  <div class="notif-box">
+    <span class="notif-title">🔔 毎日リマインダー</span>
+    <div class="notif-controls">
+      <input type="time" id="notifTime" class="time-input" value="20:00">
+      <button class="btn-notif" onclick="saveAndScheduleNotification()">保存</button>
+    </div>
   </div>
 
   <!-- 最上部：今日やるタスクエリア -->
@@ -166,6 +180,7 @@
 <script>
   let subjects = JSON.parse(localStorage.getItem('studyflow_subjects') || '[]');
   let globalPace = localStorage.getItem('studyflow_global_pace') || 'normal';
+  let notifTimerId = null;
 
   function getTodayString() { return new Date().toISOString().split('T')[0]; }
   
@@ -180,17 +195,48 @@
     render();
   }
 
-  /* 通知リクエスト処理 */
-  function requestNotification() {
+  /* ユーザーが設定した時間にリマインダーをセット */
+  function scheduleNotification() {
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    if (notifTimerId) clearTimeout(notifTimerId);
+
+    const savedTime = localStorage.getItem('studyflow_notif_time') || "20:00";
+    document.getElementById('notifTime').value = savedTime;
+
+    const [targetHour, targetMinute] = savedTime.split(':').map(Number);
+    const now = new Date();
+    const scheduledTime = new Date();
+    scheduledTime.setHours(targetHour, targetMinute, 0, 0);
+
+    if (now > scheduledTime) {
+      scheduledTime.setDate(scheduledTime.getDate() + 1); // 過ぎている場合は翌日の同時刻
+    }
+
+    const timeUntilNotification = scheduledTime.getTime() - now.getTime();
+
+    notifTimerId = setTimeout(() => {
+      new Notification("StudyFlow", {
+        body: "今日の学習タスクの時間です！進捗をチェックしましょう🔥",
+        icon: "📚"
+      });
+      scheduleNotification();
+    }, timeUntilNotification);
+  }
+
+  function saveAndScheduleNotification() {
     if (!("Notification" in window)) {
       alert("お使いのブラウザは通知に対応していません。");
       return;
     }
+
     Notification.requestPermission().then(permission => {
       if (permission === "granted") {
-        alert("通知が許可されました！ホーム画面に追加するとより安定して届きます。");
-        document.getElementById('notifBox').style.display = 'none';
-        new Notification("StudyFlow", { body: "リマインダー通知が有効になりました！今日も勉強がんばりましょう🔥" });
+        const selectedTime = document.getElementById('notifTime').value;
+        localStorage.setItem('studyflow_notif_time', selectedTime);
+        alert(`毎日 ${selectedTime} にリマインダーを設定しました！`);
+        scheduleNotification();
+      } else {
+        alert("通知が許可されませんでした。ブラウザの設定で通知を許可してください。");
       }
     });
   }
@@ -314,7 +360,6 @@
     });
   }
 
-  // サービスワーカーの簡易登録処理
   if ('serviceWorker' in navigator) {
     const swCode = `self.addEventListener('fetch', function(e) {});`;
     const blob = new Blob([swCode], { type: 'text/javascript' });
@@ -322,10 +367,7 @@
     navigator.serviceWorker.register(swUrl).catch(() => {});
   }
 
-  // 通知許可済みなら登録ボタンを非表示
-  if (window.Notification && Notification.permission === "granted") {
-    document.getElementById('notifBox').style.display = 'none';
-  }
+  scheduleNotification();
 
   const defaultDeadline = new Date();
   defaultDeadline.setDate(defaultDeadline.getDate() + 30);
