@@ -59,10 +59,11 @@
       --primary: #fb923c;
       --primary-light: #ffedd5;
       --border-color: #fed7aa;
+      --cat-ear-color: #431407; /* 耳の枠線色 */
       --success: #f43f5e;
       --success-light: #ffe4e6;
       --nav-bg: #ffffff;
-      --card-radius: 24px;
+      --card-radius: 20px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif; transition: background-color 0.2s, color 0.2s, border-color 0.2s; }
@@ -78,45 +79,51 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    /* 基本カード */
+    /* カード・枠組み */
     .card, .today-card, .manage-item { 
       position: relative; 
       background: var(--card-bg); 
       border-radius: var(--card-radius); 
       padding: 20px; 
-      margin-bottom: 24px; 
+      margin-bottom: 28px; 
       border: 2px solid var(--border-color); 
       box-shadow: 0 4px 12px rgba(0,0,0,0.03); 
     }
 
-    /* 🐱 画像参考：角の丸みがあり左右の上端から綺麗に出る猫耳（猫テーマ時） */
-    body.theme-cat .card, body.theme-cat .today-card, body.theme-cat .manage-item {
-      margin-top: 28px;
-    }
-
+    /* 🐱 画像参考：丸みのある立体的な猫耳の指定 (猫テーマ時のみ) */
     body.theme-cat .card::before, body.theme-cat .card::after,
     body.theme-cat .today-card::before, body.theme-cat .today-card::after,
     body.theme-cat .manage-item::before, body.theme-cat .manage-item::after {
       content: '';
       position: absolute;
-      top: -24px;
-      width: 38px;
-      height: 32px;
-      background-size: contain;
-      background-repeat: no-repeat;
-      pointer-events: none;
+      top: -21px;
+      width: 36px;
+      height: 24px;
+      background: var(--card-bg);
+      border: 2px solid var(--border-color);
+      border-bottom: none;
+      border-radius: 20px 20px 0 0;
       z-index: 2;
     }
 
-    /* SVGで丸みのあるなめらかな三角形の耳を描画 */
-    body.theme-cat .card::before, body.theme-cat .today-card::before, body.theme-cat .manage-item::before {
-      left: 12px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 35'%3E%3Cpath d='M 4,35 Q 8,12 20,4 Q 32,12 36,35 Z' fill='%23ffffff' stroke='%23fed7aa' stroke-width='3' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E");
+    /* 左耳 */
+    body.theme-cat .card::before,
+    body.theme-cat .today-card::before,
+    body.theme-cat .manage-item::before {
+      left: 14px;
+      transform: rotate(-18deg);
+      border-top-left-radius: 24px 28px;
+      border-top-right-radius: 12px;
     }
 
-    body.theme-cat .card::after, body.theme-cat .today-card::after, body.theme-cat .manage-item::after {
-      right: 12px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 35'%3E%3Cpath d='M 4,35 Q 8,12 20,4 Q 32,12 36,35 Z' fill='%23ffffff' stroke='%23fed7aa' stroke-width='3' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E");
+    /* 右耳 */
+    body.theme-cat .card::after,
+    body.theme-cat .today-card::after,
+    body.theme-cat .manage-item::after {
+      right: 14px;
+      transform: rotate(18deg);
+      border-top-right-radius: 24px 28px;
+      border-top-left-radius: 12px;
     }
 
     .card-subtitle { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
@@ -152,10 +159,11 @@
       transition: transform 0.1s;
     }
     
-    /* 🐾 猫の手アニメーション要素（初期状態は非表示） */
+    /* 🐾 猫の手アニメーション要素（非表示時） */
     .cat-paw {
+      display: none;
       position: absolute;
-      top: -45px;
+      top: -50px;
       left: 50%;
       transform: translateX(-50%) translateY(-20px) scale(0.8);
       font-size: 2.2rem;
@@ -163,20 +171,16 @@
       opacity: 0;
       transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       z-index: 10;
-      display: none; /* デフォルトで非表示 */
     }
 
-    /* ネコモード時のみ猫の手を表示可能に */
-    body.theme-cat .cat-paw {
-      display: block;
-    }
+    /* 猫テーマ時のみ猫の手を表示・アニメーション化 */
+    body.theme-cat .cat-paw { display: block; }
 
-    /* 猫の手がぽちっと押すアニメーション */
     body.theme-cat .btn-complete-wrap.paws-down .cat-paw {
       opacity: 1;
       transform: translateX(-50%) translateY(18px) scale(1.1);
     }
-    .btn-complete-wrap.paws-down .btn-complete {
+    body.theme-cat .btn-complete-wrap.paws-down .btn-complete {
       transform: scale(0.92);
     }
 
@@ -374,7 +378,7 @@
     }
 
     saveSubjects();
-    render(); // テーマ切り替え時に即座にボタン表示を反映
+    render(); // テーマ切り替え時にボタン表記・イラストを即時リアルタイム更新
   }
 
   function updateThemeButtonsUI() {
@@ -383,7 +387,7 @@
     document.getElementById('btnThemeCat').className = 'opt-btn' + (currentTheme === 'cat' ? ' active' : '');
   }
 
-  /* 紙吹雪（ネコモード時は肉球とお魚） */
+  /* 紙吹雪演出 */
   function fireConfetti() {
     if (typeof confetti === 'function') {
       if (currentTheme === 'cat') {
@@ -491,7 +495,7 @@
     }
   }
 
-  /* 🐾 タスク完了処理（猫モード時のみアニメーション後に完了、それ以外は即時完了） */
+  /* 🐾 今日のタスク完了処理（猫テーマ時のみアニメーション後に連動） */
   function completeTodayTaskWithPaw(btnEl, id, pagesToStudy) {
     if (currentTheme === 'cat') {
       const wrap = btnEl.parentElement;
@@ -499,10 +503,10 @@
 
       setTimeout(() => {
         wrap.classList.remove('paws-down');
-        completeTodayTask(id, pagesToStudy); // 確実に画面更新（完了画面へ移行）
+        completeTodayTask(id, pagesToStudy); // 猫の手の後にリアルタイム切り替え
       }, 250);
     } else {
-      completeTodayTask(id, pagesToStudy);
+      completeTodayTask(id, pagesToStudy); // 通常モードは即時完了
     }
   }
 
@@ -514,7 +518,7 @@
       sub.completedDate = getTodayString();
       saveSubjects();
       fireConfetti();
-      render(); // 確実に即時描画
+      render(); // 画面をリアルタイム再描画
     }
   }
 
@@ -613,6 +617,8 @@
       const todayItem = document.createElement('div');
       todayItem.className = 'today-card';
 
+      const catDecor = currentTheme === 'cat' ? '🐾 ' : '';
+
       if (isAllFinished) {
         todayItem.innerHTML = `
           <div class="today-title">${sub.title}</div>
@@ -622,11 +628,10 @@
           </div>
         `;
       } else if (isCompletedToday) {
-        const completedMsg = currentTheme === 'cat' ? '🐾 本日の学習完了だニャン！' : '✅ 本日の学習完了！';
         todayItem.innerHTML = `
           <div class="today-title" style="margin-bottom: 8px;">${sub.title}</div>
           <div class="completed-box">
-            <div class="completed-badge">${completedMsg}（現在: p.${sub.currentP - 1}）</div>
+            <div class="completed-badge">✅ ${catDecor}本日の学習完了！（現在: p.${sub.currentP - 1}）</div>
             <div class="completed-actions">
               <button class="btn-more" onclick="addMorePagesAuto(${sub.id})">＋もう少しやる</button>
               <button class="btn-undo" onclick="undoTask(${sub.id})">取り消す</button>
