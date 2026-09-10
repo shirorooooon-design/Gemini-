@@ -32,7 +32,6 @@
       --success-light: #ecfdf5;
       --nav-bg: #ffffff;
       --card-radius: 16px;
-      --cat-ear-display: none;
     }
 
     /* ダークモード */
@@ -48,7 +47,6 @@
       --success: #34d399;
       --success-light: rgba(52, 211, 153, 0.15);
       --nav-bg: #1e293b;
-      --cat-ear-display: none;
     }
 
     /* ネコモチーフモード 🐾 */
@@ -65,7 +63,6 @@
       --success-light: #ffe4e6;
       --nav-bg: #ffffff;
       --card-radius: 20px;
-      --cat-ear-display: block;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif; transition: background-color 0.2s, color 0.2s, border-color 0.2s; }
@@ -92,27 +89,27 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.03); 
     }
 
-    /* 🐱 猫耳デザイン (猫テーマの時に表示) */
+    /* 🐱 イラスト参考の三角猫耳デザイン (猫テーマ時に表示) */
     body.theme-cat .card::before, body.theme-cat .card::after,
     body.theme-cat .today-card::before, body.theme-cat .today-card::after,
     body.theme-cat .manage-item::before, body.theme-cat .manage-item::after {
       content: '';
       position: absolute;
-      top: -14px;
+      top: -16px;
       width: 28px;
-      height: 22px;
-      background: var(--card-bg);
-      border: 2px solid var(--border-color);
-      border-bottom: none;
-      border-radius: 16px 16px 0 0;
+      height: 24px;
+      background: var(--border-color);
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
       z-index: 1;
     }
-    body.theme-cat .card::before,
-    body.theme-cat .today-card::before,
-    body.theme-cat .manage-item::before { left: 24px; transform: rotate(-15deg); }
-    body.theme-cat .card::after,
-    body.theme-cat .today-card::after,
-    body.theme-cat .manage-item::after { right: 24px; transform: rotate(15deg); }
+    
+    /* 耳の内部（枠線を表現） */
+    body.theme-cat .card::before { left: 16px; transform: rotate(-10deg); }
+    body.theme-cat .card::after { right: 16px; transform: rotate(10deg); }
+    body.theme-cat .today-card::before { left: 16px; transform: rotate(-10deg); }
+    body.theme-cat .today-card::after { right: 16px; transform: rotate(10deg); }
+    body.theme-cat .manage-item::before { left: 16px; transform: rotate(-10deg); }
+    body.theme-cat .manage-item::after { right: 16px; transform: rotate(10deg); }
 
     .card-subtitle { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
     .card-title { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
@@ -363,7 +360,7 @@
     }
 
     saveSubjects();
-    render();
+    render(); // テーマ切替時に即座に画面全体を再描画（ボタン文字更新のため）
   }
 
   function updateThemeButtonsUI() {
@@ -487,8 +484,8 @@
 
     setTimeout(() => {
       wrap.classList.remove('paws-down');
-      completeTodayTask(id, pagesToStudy);
-    }, 300);
+      completeTodayTask(id, pagesToStudy); // アニメーション後に進捗を確実に更新
+    }, 250);
   }
 
   function completeTodayTask(id, pagesToStudy) {
