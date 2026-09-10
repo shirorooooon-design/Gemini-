@@ -68,7 +68,9 @@
     
     .completed-box { text-align: center; padding: 12px; background: var(--success-light); border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.2); }
     .completed-badge { color: var(--success); font-weight: 700; font-size: 0.9rem; margin-bottom: 8px; }
+    .completed-actions { display: flex; justify-content: center; gap: 8px; }
     .btn-more { padding: 6px 12px; background: #ffffff; color: var(--success); border: 1px solid var(--success); border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+    .btn-undo { padding: 6px 12px; background: #ffffff; color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
 
     /* フォーム項目 */
     .form-group { margin-bottom: 12px; }
@@ -225,7 +227,6 @@
     localStorage.setItem('studyflow_global_pace', globalPace);
   }
 
-  /* 紙吹雪演出を発動する関数 */
   function fireConfetti() {
     if (typeof confetti === 'function') {
       confetti({
@@ -305,7 +306,7 @@
       return;
     }
 
-    subjects.push({ id: Date.now(), title, currentP, targetP, deadline, completedDate: null });
+    subjects.push({ id: Date.now(), title, currentP, targetP, deadline, completedDate: null, lastCompletedPages: 0 });
     saveSubjects();
     render();
     document.getElementById('title').value = '';
@@ -326,10 +327,11 @@
   function completeTodayTask(id, pagesToStudy) {
     const sub = subjects.find(s => s.id === id);
     if (sub) {
-      sub.currentP = Math.min(sub.targetP, sub.currentP + pagesToStudy);
+      sub.lastCompletedPages = pagesToStudy;
+      sub.currentP = Math.min(sub.targetP + 1, sub.currentP + pagesToStudy);
       sub.completedDate = getTodayString();
       saveSubjects();
-      fireConfetti(); // 🎉 紙吹雪の演出
+      fireConfetti();
       render();
     }
   }
@@ -348,29 +350,34 @@
       return;
     }
 
-    sub.currentP = Math.min(sub.targetP, reachedP + 1);
+    const pagesDone = reachedP - startP + 1;
+    sub.lastCompletedPages = pagesDone;
+    sub.currentP = Math.min(sub.targetP + 1, reachedP + 1);
     sub.completedDate = getTodayString();
     saveSubjects();
     render();
   }
 
-  /* 追加で勉強する */
-  function addMorePages(id) {
+  /* 直前の達成を取り消す */
+  function undoTask(id) {
     const sub = subjects.find(s => s.id === id);
     if (!sub) return;
 
-    const input = prompt(`現在 p.${sub.currentP - 1} まで完了しています。\n追加で何ページ進めましたか？（例: 5）:`, '5');
-    if (input === null) return;
-
-    const extraPages = parseInt(input);
-    if (isNaN(extraPages) || extraPages <= 0) {
-      alert('1以上の数字を入力してください。');
-      return;
-    }
-
-    sub.currentP = Math.min(sub.targetP, sub.currentP + extraPages);
+    const pagesToRollback = sub.lastCompletedPages || 0;
+    sub.currentP = Math.max(1, sub.currentP - pagesToRollback);
+    sub.completedDate = null;
+    sub.lastCompletedPages = 0;
     saveSubjects();
-    fireConfetti(); // 🎉 紙吹雪の演出
+    render();
+  }
+
+  /* 自動で1日の学習ペース分を追加タスクに設定する */
+  function addMorePagesAuto(id) {
+    const sub = subjects.find(s => s.id === id);
+    if (!sub) return;
+
+    sub.completedDate = null; // 本日の完了状態を解除してタスクを再出力
+    saveSubjects();
     render();
   }
 
@@ -426,13 +433,22 @@
       todayItem.className = 'today-card';
 
       if (isAllFinished) {
-        todayItem.innerHTML = `<div class="today-title">${sub.title}</div><div class="completed-box"><div class="completed-badge">🎉 全ページ達成済み！</div></div>`;
+        todayItem.innerHTML = `
+          <div class="today-title">${sub.title}</div>
+          <div class="completed-box">
+            <div class="completed-badge">🎉 全ページ達成済み！</div>
+            <button class="btn-undo" onclick="undoTask(${sub.id})">取り消す</button>
+          </div>
+        `;
       } else if (isCompletedToday) {
         todayItem.innerHTML = `
           <div class="today-title" style="margin-bottom: 8px;">${sub.title}</div>
           <div class="completed-box">
             <div class="completed-badge">✅ 本日の学習完了！（現在: p.${sub.currentP - 1}）</div>
-            <button class="btn-more" onclick="addMorePages(${sub.id})">＋もう少しやる</button>
+            <div class="completed-actions">
+              <button class="btn-more" onclick="addMorePagesAuto(${sub.id})">＋もう少しやる</button>
+              <button class="btn-undo" onclick="undoTask(${sub.id})">取り消す</button>
+            </div>
           </div>
         `;
       } else {
@@ -467,19 +483,4 @@
   }
 
   if ('serviceWorker' in navigator) {
-    const swCode = `self.addEventListener('fetch', function(e) {});`;
-    const blob = new Blob([swCode], { type: 'text/javascript' });
-    const swUrl = URL.createObjectURL(blob);
-    navigator.serviceWorker.register(swUrl).catch(() => {});
-  }
-
-  scheduleNotification();
-
-  const defaultDeadline = new Date();
-  defaultDeadline.setDate(defaultDeadline.getDate() + 30);
-  document.getElementById('deadline').value = defaultDeadline.toISOString().split('T')[0];
-  render();
-</script>
-
-</body>
-</html>
+    const swCode = `self.addEventListener('fetch', function(e) {
