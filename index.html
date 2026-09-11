@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StudyFlow - 期末テスト攻略ナビ</title>
+  <title>StudyFlow - 完全学習計画ナビ</title>
   
   <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlN0dWR5RmxvdyIsCiAgInNob3J0X25hbWUiOiAiU3R1ZHlGbG93IiwKICAic3RhcnRfdXJsIjogIi4vIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZjhmYWZjIiwKICAidGhlbWVfY29sb3IiOiAiIzRhNjlmYSIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTAwIDEwMCc+PHJlY3Qgd2lkdGg9JzEwMCcgaGVpZ2h0PScxMDAnIHJ4PScyMCcgZmlsbD0nIzRhNjlmYScvPjx0ZXh0IHg9JzUwJyB5PSc2NScgZm9udC1zaXplPSc1MCcgdGV4dC1hbmNob3I9J21pZGRsZSc+📚PC90ZXh0Pjwvc3ZnPiIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIKICAgIH0KICBdCn0=">
   <meta name="theme-color" content="#4a69fa">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,8 +32,14 @@
       --nav-bg: #ffffff;
       --card-radius: 16px;
       --cat-ear-display: none;
-      --badge-bg: #e0e7ff;
-      --badge-text: #3730a3;
+      
+      /* 教科カラー */
+      --subj-jp: #ef4444;
+      --subj-math: #3b82f6;
+      --subj-sci: #10b981;
+      --subj-eng: #8b5cf6;
+      --subj-soc: #f59e0b;
+      --subj-review: #64748b;
     }
 
     /* ダークモード */
@@ -51,8 +56,6 @@
       --success-light: rgba(52, 211, 153, 0.15);
       --nav-bg: #1e293b;
       --cat-ear-display: none;
-      --badge-bg: #312e81;
-      --badge-text: #c7d2fe;
     }
 
     /* ネコモチーフモード 🐾 */
@@ -70,8 +73,6 @@
       --nav-bg: #ffffff;
       --card-radius: 20px;
       --cat-ear-display: block;
-      --badge-bg: #ffedd5;
-      --badge-text: #9a3412;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif; transition: background-color 0.2s, color 0.2s, border-color 0.2s; }
@@ -79,15 +80,17 @@
     .app-container { width: 100%; max-width: 600px; padding: 16px; }
 
     header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding-top: 8px; }
-    header .logo-icon { background: #fef3c7; width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+    header .logo-icon { background: #fef3c7; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
     header .title-sub { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
     header h1 { font-size: 1.2rem; font-weight: 700; color: var(--text-main); }
 
-    /* タブ切り替え */
+    /* 今日の日付バナー */
+    .today-banner { background: var(--primary-light); color: var(--primary); font-weight: 700; padding: 10px 16px; border-radius: 12px; margin-bottom: 16px; font-size: 0.9rem; display: flex; justify-content: space-between; align-items: center; }
+
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    /* カード・コンテナ */
+    /* カード・汎用スタイル */
     .card { position: relative; background: var(--card-bg); border-radius: var(--card-radius); padding: 18px; margin-bottom: 16px; border: 1px solid var(--border-color); box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
     
     .card::before {
@@ -101,54 +104,60 @@
 
     .card-subtitle { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
     .card-title { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
-    .card-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px; line-height: 1.4; }
+    .card-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; }
 
-    /* ペース・テーマ選択ボタン */
     .options-grid { display: flex; gap: 8px; }
     .opt-btn { flex: 1; padding: 10px 4px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-muted); font-size: 0.8rem; font-weight: 700; cursor: pointer; text-align: center; }
     .opt-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
-    /* 今日のタスクカード */
-    .today-card { position: relative; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-    .today-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-    .subject-tag { font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: var(--badge-bg); color: var(--badge-text); display: inline-block; margin-bottom: 4px; }
-    .today-title { font-size: 1rem; font-weight: 700; color: var(--text-main); }
-    .today-badge { font-size: 0.85rem; font-weight: 700; color: var(--primary); background: var(--primary-light); padding: 4px 10px; border-radius: 6px; white-space: nowrap; }
-    
-    .method-desc { font-size: 0.82rem; color: var(--text-muted); background: var(--input-bg); padding: 8px 12px; border-radius: 8px; margin: 8px 0 12px 0; border-left: 3px solid var(--primary); }
 
-    .action-group { display: flex; gap: 8px; }
-    .btn-complete { flex: 2; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: transform 0.1s; }
+    /* 今日の教科タスクカードデザイン */
+    .subject-card { position: relative; background: var(--card-bg); border-radius: var(--card-radius); padding: 16px; margin-bottom: 14px; border: 1px solid var(--border-color); border-left: 6px solid var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+    .subject-card[data-subject="国語"] { border-left-color: var(--subj-jp); }
+    .subject-card[data-subject="数学"] { border-left-color: var(--subj-math); }
+    .subject-card[data-subject="理科"] { border-left-color: var(--subj-sci); }
+    .subject-card[data-subject="英語"] { border-left-color: var(--subj-eng); }
+    .subject-card[data-subject="社会"] { border-left-color: var(--subj-soc); }
+    .subject-card[data-subject="総復習"] { border-left-color: var(--subj-review); }
+
+    .subj-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .subj-badge { font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; color: white; }
+    .subject-card[data-subject="国語"] .subj-badge { background: var(--subj-jp); }
+    .subject-card[data-subject="数学"] .subj-badge { background: var(--subj-math); }
+    .subject-card[data-subject="理科"] .subj-badge { background: var(--subj-sci); }
+    .subject-card[data-subject="英語"] .subj-badge { background: var(--subj-eng); }
+    .subject-card[data-subject="社会"] .subj-badge { background: var(--subj-soc); }
+    .subject-card[data-subject="総復習"] .subj-badge { background: var(--subj-review); }
+
+    .subj-material-name { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); }
+    .subj-action-title { font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+    .subj-instruction { font-size: 0.85rem; color: var(--text-main); background: var(--input-bg); padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--border-color); line-height: 1.4; }
+
+    .btn-complete { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: transform 0.1s; }
     .btn-complete:active { transform: scale(0.98); }
-    .btn-partial { flex: 1; padding: 10px; background: var(--input-bg); color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
-    
+
     .completed-box { text-align: center; padding: 12px; background: var(--success-light); border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.2); }
     .completed-badge { color: var(--success); font-weight: 700; font-size: 0.9rem; margin-bottom: 8px; }
-    .completed-actions { display: flex; justify-content: center; gap: 8px; }
-    .btn-more { padding: 6px 12px; background: var(--card-bg); color: var(--success); border: 1px solid var(--success); border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
     .btn-undo { padding: 6px 12px; background: var(--card-bg); color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
 
-    /* フォーム・リスト */
+    /* フォーム・設定 */
     .form-group { margin-bottom: 12px; }
     label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
     input, select { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); font-size: 0.9rem; outline: none; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .btn-primary { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 8px; }
 
-    /* 進捗表示 */
-    .manage-item { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 14px 16px; margin-bottom: 10px; }
-    .manage-header { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 6px; font-size: 0.95rem; }
-    .progress-bar-bg { background: var(--input-bg); height: 8px; border-radius: 999px; overflow: hidden; margin: 6px 0; }
-    .progress-bar-fill { height: 100%; background: var(--primary); border-radius: 999px; }
-    .manage-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); }
+    /* 進捗タイムライン */
+    .timeline-item { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 14px; margin-bottom: 10px; }
+    .timeline-item.active-week { border: 2px solid var(--primary); background: var(--primary-light); }
+    .timeline-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
+    .timeline-desc { font-size: 0.8rem; color: var(--text-muted); }
 
-    /* ナビゲーション */
+    /* ナビゲーションバー */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--nav-bg); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; max-width: 600px; margin: 0 auto; z-index: 1000; }
     .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.7rem; font-weight: 700; cursor: pointer; gap: 3px; }
     .nav-item .icon { font-size: 1.2rem; }
     .nav-item.active { color: var(--primary); }
 
     .empty-state { text-align: center; color: var(--text-muted); padding: 30px 0; font-size: 0.9rem; }
-    .info-banner { background: var(--primary-light); border: 1px solid var(--primary); color: var(--primary); padding: 10px 14px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
   </style>
 </head>
 <body>
@@ -157,25 +166,26 @@
   <header>
     <div class="logo-icon" id="appLogo">🎓</div>
     <div>
-      <div class="title-sub" id="appSubTitle">TERM-END EXAM ROADMAP</div>
-      <h1 id="appTitle">期末テスト完全攻略ナビ</h1>
+      <div class="title-sub">22-WEEK STUDY PLAN</div>
+      <h1 id="appTitle">毎日の勉強ナビ</h1>
     </div>
   </header>
 
-  <!-- 今日のカウントダウン -->
-  <div class="info-banner">
-    <span id="countdownText">🎯 2/12 期末テストまであと -- 日</span>
-    <span id="currentWeekText" style="font-size: 0.75rem; opacity: 0.8;"></span>
+  <!-- 今日の日付 ＆ 現在の週 -->
+  <div class="today-banner">
+    <span id="currentDateStr">2026年9月11日(金)</span>
+    <span id="currentWeekStr">9月第2週</span>
   </div>
 
-  <!-- タブ1: 今日のタスク -->
+  <!-- タブ1: 今日のやるべきこと -->
   <div id="tab-today" class="tab-content active">
     <div class="card">
-      <div class="card-subtitle">TODAY'S PACE</div>
-      <div class="card-title">今日の調子は？</div>
+      <div class="card-subtitle">TODAY'S CONDITION</div>
+      <div class="card-title">今日はどれくらいできそう？</div>
+      <div class="card-desc">目標ペースを調整できます。無理のない範囲で進めましょう。</div>
       <div class="options-grid">
         <button id="btnPaceLight" class="opt-btn" onclick="setGlobalPace('light')">少なめ</button>
-        <button id="btnPaceNormal" class="opt-btn" onclick="setGlobalPace('normal')">普通（標準）</button>
+        <button id="btnPaceNormal" class="opt-btn" onclick="setGlobalPace('normal')">標準</button>
         <button id="btnPaceHeavy" class="opt-btn" onclick="setGlobalPace('heavy')">多め</button>
       </div>
     </div>
@@ -184,17 +194,21 @@
     <div id="todayTaskList"></div>
   </div>
 
-  <!-- タブ2: 学習ロードマップ（全計画） -->
+  <!-- タブ2: 22週間の学習計画一覧 -->
   <div id="tab-progress" class="tab-content">
-    <div class="card-subtitle" style="margin-left: 4px; margin-bottom: 8px;">OVERALL PROGRESS</div>
-    <div id="manageList"></div>
+    <div class="card-subtitle" style="margin-left: 4px; margin-bottom: 8px;">22-WEEK SCHEDULE</div>
+    <div class="card">
+      <div class="card-title">📅 今後の学習計画</div>
+      <div class="card-desc">テスト当日（2027/2/12）までの全体ロードマップです。現在の週がハイライト表示されます。</div>
+    </div>
+    <div id="scheduleTimeline"></div>
   </div>
 
   <!-- タブ3: 設定 -->
   <div id="tab-settings" class="tab-content">
     <div class="card">
       <div class="card-title">🎨 テーマ切り替え</div>
-      <div class="card-desc">デザインを選択できます。</div>
+      <div class="card-desc">お好みのデザインに変更できます。</div>
       <div class="options-grid">
         <button id="btnThemeLight" class="opt-btn" onclick="setTheme('light')">☀️ ライト</button>
         <button id="btnThemeDark" class="opt-btn" onclick="setTheme('dark')">🌙 ダーク</button>
@@ -204,7 +218,7 @@
 
     <div class="card">
       <div class="card-title">🔔 リマインダー設定</div>
-      <div class="card-desc">毎日の学習時間をお知らせします。</div>
+      <div class="card-desc">指定した時間に毎日の学習タスクをお知らせします。</div>
       <div class="form-group">
         <label>通知時刻</label>
         <input type="time" id="notifTime" value="20:00">
@@ -214,15 +228,15 @@
   </div>
 </div>
 
-<!-- 下部ナビゲーション -->
+<!-- 下部ナビゲーションバー -->
 <div class="bottom-nav">
   <div class="nav-item active" onclick="switchTab('today', this)">
     <span class="icon">📝</span>
-    <span>今日のタスク</span>
+    <span>今日すること</span>
   </div>
   <div class="nav-item" onclick="switchTab('progress', this)">
-    <span class="icon">📊</span>
-    <span>進捗と計画</span>
+    <span class="icon">🗺️</span>
+    <span>全体計画</span>
   </div>
   <div class="nav-item" onclick="switchTab('settings', this)">
     <span class="icon">⚙️</span>
@@ -230,44 +244,225 @@
   </div>
 </div>
 <script>
-  // 期末テスト計画用データ定義
-  const MASTER_PLAN = [
-    // 9月
-    { id: '9-2-ja', weekId: '2026-W37', month: '9月第2週', subject: '国語', title: '国語ワーク', startP: 4, endP: 12, method: '📖 教科書の既習文章の漢字・語句を確認しながらワークを解く' },
-    { id: '9-2-ma', weekId: '2026-W37', month: '9月第2週', subject: '数学', title: '数学ワーク', startP: 14, endP: 20, method: '✍️ 計算問題の基礎を確実に解く' },
-    { id: '9-2-sc', weekId: '2026-W37', month: '9月第2週', subject: '理科', title: '理科ワーク', startP: 10, endP: 16, method: '📖 教科書インプット＋基本確認問題を解く' },
-    { id: '9-2-en', weekId: '2026-W37', month: '9月第2週', subject: '英語', title: '英語ワーク', startP: 2, endP: 10, method: '🔤 単語暗記＋基本文法の確認' },
-    { id: '9-2-so', weekId: '2026-W37', month: '9月第2週', subject: '社会', title: '社会(地理)☆問題集', startP: 4, endP: 10, method: '📖 教科書を読む ➔ 閉じて要点確認 ➔ ☆問題集を解く' },
-
-    { id: '9-3-ja', weekId: '2026-W38', month: '9月第3週', subject: '国語', title: '国語ワーク', startP: 13, endP: 20, method: '✍️ ワーク演習＋間違えた問題に×印をつける' },
-    { id: '9-3-ma', weekId: '2026-W38', month: '9月第3週', subject: '数学', title: '数学ワーク', startP: 21, endP: 28, method: '✍️ 途中式を丁寧に書いて解く' },
-    { id: '9-3-sc', weekId: '2026-W38', month: '9月第3週', subject: '理科', title: '理科ワーク＆☆', startP: 17, endP: 24, method: '📖 教科書確認＋ワーク(17~24p)と理科☆(6~12p)を並行' },
-    { id: '9-3-en', weekId: '2026-W38', month: '9月第3週', subject: '英語', title: '英語ワーク＆☆', startP: 11, endP: 20, method: '🔤 ワーク(11~20p)＋英語☆(4~10p)を解く' },
-    { id: '9-3-so', weekId: '2026-W38', month: '9月第3週', subject: '社会', title: '社会(歴史)☆問題集', startP: 1, endP: 10, method: '📖 教科書で流れを把握 ➔ ☆問題集を解く' },
-
-    { id: '9-4-ja', weekId: '2026-W39', month: '9月第4週', subject: '国語', title: '国語ワーク', startP: 21, endP: 30, method: '✍️ 読解・語句問題の演習' },
-    { id: '9-4-ma', weekId: '2026-W39', month: '9月第4週', subject: '数学', title: '数学ワーク', startP: 29, endP: 36, method: '✍️ 基本〜標準問題の演習' },
-    { id: '9-4-sc', weekId: '2026-W39', month: '9月第4週', subject: '理科', title: '理科ワーク＆☆', startP: 25, endP: 32, method: '✍️ ワーク(25~32p)＋理科☆(13~20p)' },
-    { id: '9-4-en', weekId: '2026-W39', month: '9月第4週', subject: '英語', title: '英語ワーク＆☆', startP: 21, endP: 30, method: '✍️ ワーク(21~30p)＋英語☆(11~18p)' },
-    { id: '9-4-so', weekId: '2026-W39', month: '9月第4週', subject: '社会', title: '社会(地理)☆問題集', startP: 11, endP: 20, method: '📖 地図・資料を確認しながら問題集を解く' },
-
-    { id: '9-5-rev', weekId: '2026-W40', month: '9月最終', subject: '全教科', title: '9月のミス問題総解き直し', startP: 1, endP: 1, method: '🔄 9月に解いた全問題の「×（間違えた問題）」のみ解き直す！' },
+  // 22週間（2026年9/11〜2027年2/12）の完全詳細マスター計画データ
+  const masterSchedule = [
+    {
+      id: "w1", start: "2026-09-11", end: "2026-09-13", label: "9月 第2週",
+      tasks: [
+        { subject: "国語", material: "学校ワーク", action: "教科書の既習文章の漢字・語句を音読＆演習", target: "4〜12p" },
+        { subject: "数学", material: "学校ワーク", action: "計算問題の基礎を解く", target: "14〜20p" },
+        { subject: "理科", material: "学校ワーク", action: "教科書を読んで理解→基本確認問題を解く", target: "10〜16p" },
+        { subject: "英語", material: "学校ワーク", action: "単語の音読暗記＋基本文法の確認問題", target: "2〜10p" },
+        { subject: "社会", material: "☆問題集（地理）", action: "教科書インプット（太字確認）＋☆問題集演習", target: "4〜10p" }
+      ]
+    },
+    {
+      id: "w2", start: "2026-09-14", end: "2026-09-20", label: "9月 第3週",
+      tasks: [
+        { subject: "国語", material: "学校ワーク", action: "文章題インプット＋ワーク解き", target: "13〜20p" },
+        { subject: "数学", material: "学校ワーク", action: "方程式・文章題の基礎問題", target: "21〜28p" },
+        { subject: "理科", material: "学校ワーク / ☆問題集", action: "ワーク(17〜24p) ＆ 理科☆問題集(6〜12p)", target: "並行演習" },
+        { subject: "英語", material: "学校ワーク / ☆問題集", action: "ワーク(11〜20p) ＆ 英語☆問題集(4〜10p)", target: "並行演習" },
+        { subject: "社会", material: "☆問題集（歴史）", action: "教科書時代インプット＋☆問題集", target: "1〜10p" }
+      ]
+    },
+    {
+      id: "w3", start: "2026-09-21", end: "2026-09-27", label: "9月 第4週",
+      tasks: [
+        { subject: "国語", material: "学校ワーク", action: "読解問題演習", target: "21〜30p" },
+        { subject: "数学", material: "学校ワーク", action: "関数・図形の基礎問題", target: "29〜36p" },
+        { subject: "理科", material: "学校ワーク / ☆問題集", action: "ワーク(25〜32p) ＆ 理科☆(13〜20p)", target: "並行演習" },
+        { subject: "英語", material: "学校ワーク / ☆問題集", action: "ワーク(21〜30p) ＆ 英語☆(11〜18p)", target: "並行演習" },
+        { subject: "社会", material: "☆問題集（地理）", action: "地形・気候インプット＋☆問題集", target: "11〜20p" }
+      ]
+    },
+    {
+      id: "w4", start: "2026-09-28", end: "2026-09-30", label: "9月 月末復習期間",
+      tasks: [
+        { subject: "総復習", material: "9月に解いた全教材", action: "今月間違えた問題（×印）のみを完璧に解き直す", target: "全間違え問題" }
+      ]
+    },
+    {
+      id: "w5", start: "2026-10-01", end: "2026-10-04", label: "10月 第1週",
+      tasks: [
+        { subject: "国語", material: "学校ワーク", action: "語句・文法・読解問題", target: "31〜40p" },
+        { subject: "数学", material: "学校ワーク", action: "応用問題への接続", target: "37〜44p" },
+        { subject: "理科", material: "学校ワーク / ☆問題集", action: "ワーク(33〜40p) ＆ 理科☆(21〜28p)", target: "並行演習" },
+        { subject: "英語", material: "学校ワーク / ☆問題集", action: "ワーク(31〜40p) ＆ 英語☆(19〜26p)", target: "並行演習" },
+        { subject: "社会", material: "☆問題集（歴史）", action: "時代インプット＋☆問題集", target: "11〜20p" }
+      ]
+    },
+    {
+      id: "w6", start: "2026-10-05", end: "2026-10-11", label: "10月 第2週",
+      tasks: [
+        { subject: "国語", material: "学校ワーク", action: "説明文・論説文の読解", target: "41〜50p" },
+        { subject: "数学", material: "学校ワーク", action: "標準問題の定着", target: "45〜52p" },
+        { subject: "理科", material: "学校ワーク / ☆問題集", action: "ワーク(41〜48p) ＆ 理科☆(29〜36p)", target: "並行演習" },
+        { subject: "英語", material: "学校ワーク / ☆問題集", action: "ワーク(41〜50p) ＆ 英語☆(27〜34p)", target: "並行演習" },
+        { subject: "社会", material: "☆問題集（地理）", action: "産業・貿易インプット＋☆問題集", target: "21〜30p" }
+      ]
+    },
+    {
+      id: "w7", start: "2026-10-12", end: "2026-10-18", label: "10月 第3週",
+      tasks: [
+        { subject: "国語", material: "学校ワーク", action: "古文・詩歌の基礎インプット＋演習", target: "51〜62p" },
+        { subject: "数学", material: "学校ワーク", action: "図形の証明・計量", target: "53〜60p" },
+        { subject: "理科", material: "学校ワーク / ☆問題集", action: "ワーク(49〜56p) ＆ 理科☆(37〜44p)", target: "並行演習" },
+        { subject: "英語", material: "学校ワーク / ☆問題集", action: "ワーク(51〜62p) ＆ 英語☆(35〜42p)", target: "並行演習" },
+        { subject: "社会", material: "☆問題集（歴史）", action: "近世史インプット＋☆問題集", target: "21〜30p" }
+      ]
+    },
+    {
+      id: "w8", start: "2026-10-19", end: "2026-10-25", label: "10月 第4週",
+      tasks: [
+        { subject: "国語", material: "学校ワーク", action: "随筆・小説の読解", target: "63〜75p" },
+        { subject: "数学", material: "学校ワーク", action: "確率・データの活用", target: "61〜68p" },
+        { subject: "理科", material: "学校ワーク / ☆問題集", action: "ワーク(57〜65p) ＆ 理科☆(45〜52p)", target: "並行演習" },
+        { subject: "英語", material: "学校ワーク / ☆問題集", action: "ワーク(63〜75p) ＆ 英語☆(43〜50p)", target: "並行演習" },
+        { subject: "社会", material: "☆問題集（地理）", action: "日本の各地方インプット＋☆問題集", target: "31〜42p" }
+      ]
+    },
+    {
+      id: "w9", start: "2026-10-26", end: "2026-10-31", label: "10月 月末復習期間",
+      tasks: [
+        { subject: "総復習", material: "10月に解いた全教材", action: "10月中に発生した×印（間違えた問題）の2周目解き直し", target: "2周目解き直し" }
+      ]
+    },
+    {
+      id: "w10", start: "2026-11-01", end: "2026-11-08", label: "11月 第1週（☆☆特訓開始期）",
+      tasks: [
+        { subject: "国語", material: "学校ワーク", action: "後半単元の解き進め", target: "76〜90p" },
+        { subject: "数学", material: "学校ワーク / 数学☆☆", action: "ワーク(69〜78p) ＋ (ワーク90%以上達成時) 数学☆☆(8〜16p)", target: "発展問題挑戦" },
+        { subject: "理科", material: "学校ワーク / ☆問題集", action: "ワーク(66〜75p) ＆ 理科☆(53〜62p)", target: "並行演習" },
+        { subject: "英語", material: "学校ワーク / ☆問題集", action: "ワーク(76〜90p) ＆ 英語☆(51〜62p)", target: "並行演習" },
+        { subject: "社会", material: "☆問題集（歴史）", action: "近代史インプット＋☆問題集", target: "31〜42p" }
+      ]
+    },
+    {
+      id: "w11", start: "2026-11-09", end: "2026-11-15", label: "11月 第2週",
+      tasks: [
+        { subject: "国語", material: "学校ワーク / 国文法☆☆", action: "ワーク(91〜105p) ＋ 国語・国文法☆☆(2〜12p)", target: "文法強化" },
+        { subject: "数学", material: "学校ワーク / 数学☆☆", action: "ワーク(79〜88p) ＆ 数学☆☆(17〜25p)", target: "応用問題演習" },
+        { subject: "理科", material: "学校ワーク / ☆問題集", action: "ワーク(76〜88p) ＆ 理科☆(63〜72p)", target: "並行演習" },
+        { subject: "英語", material: "学校ワーク / ☆問題集", action: "ワーク(91〜105p) ＆ 英語☆(63〜74p)", target: "長文・文法強化" },
+        { subject: "社会", material: "☆問題集（地理）", action: "世界の諸地域インプット＋☆問題集", target: "43〜55p" }
+      ]
+    },
+    {
+      id: "w12", start: "2026-11-16", end: "2026-11-22", label: "11月 第3週",
+      tasks: [
+        { subject: "国語", material: "学校ワーク / 国文法☆☆", action: "ワーク(106〜120p) ＆ 国文法☆☆(13〜24p)", target: "並行演習" },
+        { subject: "数学", material: "学校ワーク / 数学☆☆", action: "ワーク(89〜98p) ＆ 数学☆☆(26〜35p)", target: "並行演習" },
+        { subject: "理科", material: "学校ワーク / ☆問題集", action: "ワーク(89〜100p) ＆ 理科☆(73〜82p)", target: "並行演習" },
+        { subject: "英語", material: "学校ワーク / ☆問題集", action: "ワーク(106〜120p) ＆ 英語☆(75〜86p)", target: "並行演習" },
+        { subject: "社会", material: "☆問題集（歴史）", action: "現代史インプット＋☆問題集", target: "43〜55p" }
+      ]
+    },
+    {
+      id: "w13", start: "2026-11-23", end: "2026-11-30", label: "11月 第4週",
+      tasks: [
+        { subject: "国語", material: "学校ワーク / 古文☆☆", action: "ワーク(121〜135p) ＋ 古文☆☆(2〜12p)開始", target: "古文強化" },
+        { subject: "数学", material: "学校ワーク / 数学☆☆", action: "ワーク(99〜108p) ＆ 数学☆☆(36〜45p)", target: "並行演習" },
+        { subject: "理科", material: "学校ワーク / ☆問題集", action: "ワーク(101〜112p) ＆ 理科☆(83〜92p)", target: "並行演習" },
+        { subject: "英語", material: "学校ワーク / ☆問題集", action: "ワーク(121〜135p) ＆ 英語☆(87〜98p)", target: "並行演習" },
+        { subject: "社会", material: "☆問題集（地理）", action: "環境問題・総合インプット＋☆問題集", target: "56〜68p" }
+      ]
+    },
+    {
+      id: "w14", start: "2026-12-01", end: "2026-12-06", label: "12月 第1週",
+      tasks: [
+        { subject: "国語", material: "学校ワーク / 古文☆☆", action: "ワーク(136〜148p) ＆ 古文☆☆(13〜24p)", target: "ラストスパート" },
+        { subject: "数学", material: "学校ワーク / 数学☆☆", action: "ワーク(109〜118p) ＆ 数学☆☆(46〜55p)", target: "全範囲完遂目前" },
+        { subject: "理科", material: "学校ワーク / ☆問題集", action: "ワーク(113〜124p) ＆ 理科☆(93〜102p)", target: "並行演習" },
+        { subject: "英語", material: "学校ワーク / ☆問題集", action: "ワーク(136〜148p) ＆ 英語☆(99〜110p)", target: "長文演習" },
+        { subject: "社会", material: "☆問題集（歴史）", action: "全時代の総まとめ演習", target: "56〜68p" }
+      ]
+    },
+    {
+      id: "w15", start: "2026-12-07", end: "2026-12-13", label: "12月 第2週（学校ワーク1周目全完了！）",
+      tasks: [
+        { subject: "国語", material: "学校ワーク / 読解☆☆", action: "ワーク(149〜160p【1周目完了】) ＋ 読解☆☆(4〜16p)", target: "1周完了＆読解" },
+        { subject: "数学", material: "学校ワーク / 数学☆☆", action: "ワーク(119〜127p【1周目完了】) ＆ 数学☆☆(56〜65p)", target: "1周目完了！" },
+        { subject: "理科", material: "学校ワーク / 理科☆", action: "ワーク(125〜137p【1周目完了】) ＆ 理科☆(103〜112p)", target: "1周目完了！" },
+        { subject: "英語", material: "学校ワーク / 英語☆", action: "ワーク(149〜161p【1周目完了】) ＆ 英語☆(111〜122p)", target: "1周目完了！" },
+        { subject: "社会", material: "☆問題集（地理）", action: "地理☆問題集 仕上げ演習", target: "69〜82p" }
+      ]
+    },
+    {
+      id: "w16", start: "2026-12-14", end: "2026-12-20", label: "12月 第3週（☆完成＆ワーク2周目開始）",
+      tasks: [
+        { subject: "社会", material: "☆問題集（地理・歴史）", action: "地理☆(83〜127p【完了】) / 歴史☆(69〜127p【完了】)", target: "全ページ完了！" },
+        { subject: "総復習", material: "全教科 学校ワーク", action: "1周目に間違えた問題（×印）のみの全教科総解き直し（2周目）", target: "弱点克服" }
+      ]
+    },
+    {
+      id: "w17", start: "2026-12-21", end: "2026-12-31", label: "12月 年末総仕上げ",
+      tasks: [
+        { subject: "理科", material: "理科☆問題集", action: "残りのページを解き切って完全に1周目を終わらせる", target: "全完成" },
+        { subject: "英語", material: "英語☆問題集", action: "残りのページを解き切って完全に1周目を終わらせる", target: "全完成" },
+        { subject: "国語", material: "国語☆☆（文法・古文・読解）", action: "弱点単元を絞り込んで集中演習", target: "単元別強化" },
+        { subject: "数学", material: "数学☆☆問題集", action: "弱点単元を絞り込んで集中演習", target: "単元別強化" }
+      ]
+    },
+    {
+      id: "w18", start: "2027-01-01", end: "2027-01-07", label: "1月 第1週（既習全範囲復習）",
+      tasks: [
+        { subject: "総復習", material: "全教科 学校ワーク", action: "ワーク2周目でさらに間違えた問題（××印）の徹底解き直し", target: "××印の完治" }
+      ]
+    },
+    {
+      id: "w19", start: "2027-01-08", end: "2027-01-14", label: "1月 第2週（☆☆発展強化）",
+      tasks: [
+        { subject: "国語", material: "国語☆☆問題集", action: "苦手分野の最終ピックアップ演習", target: "苦手克服" },
+        { subject: "数学", material: "数学☆☆問題集", action: "苦手分野の最終ピックアップ演習", target: "苦手克服" }
+      ]
+    },
+    {
+      id: "w20", start: "2027-01-15", end: "2027-01-21", label: "1月 第3週（実践テスト演習）",
+      tasks: [
+        { subject: "総復習", material: "各種問題集の章末テスト", action: "タイマーを50分にセットして「まとめ問題」を本番形式で解く", target: "50分本番練習" }
+      ]
+    },
+    {
+      id: "w21", start: "2027-01-22", end: "2027-01-31", label: "★直前モード発動（範囲発表後）",
+      tasks: [
+        { subject: "総復習", material: "テスト範囲表", action: "範囲表を確認！範囲に含まれるページすべてに付箋を貼る", target: "範囲特定" },
+        { subject: "総復習", material: "学校ワーク / 社会☆", action: "テスト範囲内の未提出指定ページを【全て】完成させる", target: "提出物完了" },
+        { subject: "総復習", material: "全教科のワーク", action: "範囲内の×印がついた問題のみを全教科集中的に解き直し（3周目）", target: "3周目完成" }
+      ]
+    },
+    {
+      id: "w22", start: "2027-02-01", end: "2027-02-12", label: "🔥 超直前総仕上げ（テスト当日まで！）",
+      tasks: [
+        { subject: "総復習", material: "学校ワークのテスト範囲", action: "すべての問題が自力で100%解けるか最終チェック", target: "100%自力クリア" },
+        { subject: "理科", material: "実験・観察", action: "実験の目的・器具・考察を白紙に書いて説明できるかテスト", target: "記述・考察確認" },
+        { subject: "社会", material: "歴史・地理用語", action: "因果関係を白紙に書いて説明できるか最終確認", target: "記述対策" },
+        { subject: "英語", material: "教科書本文", action: "本文の和訳・英訳を最終チェック", target: "本文完全暗記" },
+        { subject: "総復習", material: "間違いノート・××印", action: "直前高速周回！前日夜22時就寝＆当日全力を尽くす！", target: "テスト本番🔥" }
+      ]
+    }
   ];
 
-  let taskProgress = JSON.parse(localStorage.getItem('studyflow_plan_progress') || '{}');
+  let completedTasks = JSON.parse(localStorage.getItem('studyflow_completed_v2') || '{}');
   let globalPace = localStorage.getItem('studyflow_global_pace') || 'normal';
   let currentTheme = localStorage.getItem('studyflow_theme') || 'light';
   let notifTimerId = null;
 
-  function getTodayString() { return new Date().toISOString().split('T')[0]; }
+  function getTodayString() {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
 
-  function saveData() {
-    localStorage.setItem('studyflow_plan_progress', JSON.stringify(taskProgress));
+  function saveState() {
+    localStorage.setItem('studyflow_completed_v2', JSON.stringify(completedTasks));
     localStorage.setItem('studyflow_global_pace', globalPace);
     localStorage.setItem('studyflow_theme', currentTheme);
   }
 
-  /* テーマ設定（不具合修正済み） */
+  /* テーマ設定（文字差し替えバグ修正済み） */
   function setTheme(theme) {
     currentTheme = theme;
     document.body.className = '';
@@ -275,22 +470,18 @@
     if (theme === 'dark') {
       document.body.classList.add('theme-dark');
       document.getElementById('appLogo').textContent = '🎓';
-      document.getElementById('appSubTitle').textContent = 'TERM-END EXAM ROADMAP';
-      document.getElementById('appTitle').textContent = '期末テスト完全攻略ナビ';
+      document.getElementById('appTitle').textContent = '毎日の勉強ナビ';
     } else if (theme === 'cat') {
       document.body.classList.add('theme-cat');
       document.getElementById('appLogo').textContent = '🐾';
-      document.getElementById('appSubTitle').textContent = 'NYAN STUDY FLOW';
-      document.getElementById('appTitle').textContent = 'ニャンと期末テスト攻略ナビ';
+      document.getElementById('appTitle').textContent = 'ニャンと勉強ナビ';
     } else {
       document.getElementById('appLogo').textContent = '🎓';
-      document.getElementById('appSubTitle').textContent = 'TERM-END EXAM ROADMAP';
-      document.getElementById('appTitle').textContent = '期末テスト完全攻略ナビ';
+      document.getElementById('appTitle').textContent = '毎日の勉強ナビ';
     }
 
-    saveData();
-    updateThemeButtonsUI();
-    render(); // テキスト切り替えを即時反映
+    saveState();
+    render();
   }
 
   function updateThemeButtonsUI() {
@@ -314,21 +505,74 @@
 
   function setGlobalPace(mode) {
     globalPace = mode;
-    saveData();
+    saveState();
     render();
   }
 
-  function completeTask(taskId) {
-    taskProgress[taskId] = { status: 'completed', date: getTodayString() };
-    saveData();
-    fireConfetti();
+  function scheduleNotification() {
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    if (notifTimerId) clearTimeout(notifTimerId);
+
+    const savedTime = localStorage.getItem('studyflow_notif_time') || "20:00";
+    document.getElementById('notifTime').value = savedTime;
+
+    const [targetHour, targetMinute] = savedTime.split(':').map(Number);
+    const now = new Date();
+    const scheduledTime = new Date();
+    scheduledTime.setHours(targetHour, targetMinute, 0, 0);
+
+    if (now > scheduledTime) {
+      scheduledTime.setDate(scheduledTime.getDate() + 1);
+    }
+
+    const timeUntilNotification = scheduledTime.getTime() - now.getTime();
+
+    notifTimerId = setTimeout(() => {
+      new Notification("StudyFlow", {
+        body: currentTheme === 'cat' ? "今日の勉強タイムだニャン！🐾" : "今日の学習タスクの時間です！進捗をチェックしましょう🔥",
+        icon: "📚"
+      });
+      scheduleNotification();
+    }, timeUntilNotification);
+  }
+
+  function saveAndScheduleNotification() {
+    if (!("Notification" in window)) {
+      alert("お使いのブラウザは通知に対応していません。");
+      return;
+    }
+
+    Notification.requestPermission().then(permission => {
+      if (permission === "granted") {
+        const selectedTime = document.getElementById('notifTime').value;
+        localStorage.setItem('studyflow_notif_time', selectedTime);
+        alert(`毎日 ${selectedTime} にリマインダーを設定しました！`);
+        scheduleNotification();
+      } else {
+        alert("通知が許可されませんでした。");
+      }
+    });
+  }
+
+  function toggleTaskComplete(taskId) {
+    const today = getTodayString();
+    if (completedTasks[taskId] === today) {
+      delete completedTasks[taskId];
+    } else {
+      completedTasks[taskId] = today;
+      fireConfetti();
+    }
+    saveState();
     render();
   }
 
-  function undoTask(taskId) {
-    delete taskProgress[taskId];
-    saveData();
-    render();
+  function getCurrentWeekPlan() {
+    const today = getTodayString();
+    let current = masterSchedule.find(w => today >= w.start && today <= w.end);
+    if (!current) {
+      current = masterSchedule[0]; // デフォルト
+    }
+    return current;
   }
 
   function updatePaceButtonsUI() {
@@ -337,113 +581,88 @@
     document.getElementById('btnPaceHeavy').className = 'opt-btn' + (globalPace === 'heavy' ? ' active' : '');
   }
 
-  function renderCountdown() {
-    const today = new Date();
-    const examDate = new Date('2027-02-12');
-    const diffTime = examDate - today;
-    const diffDays = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
-    
-    document.getElementById('countdownText').textContent = `🎯 2/12 期末テストまであと ${diffDays} 日`;
-  }
-
   function render() {
     updatePaceButtonsUI();
     updateThemeButtonsUI();
-    renderCountdown();
 
+    const todayStr = getTodayString();
+    const d = new Date();
+    const days = ['日','月','火','水','木','金','土'];
+    document.getElementById('currentDateStr').textContent = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日(${days[d.getDay()]})`;
+
+    const currentWeek = getCurrentWeekPlan();
+    document.getElementById('currentWeekStr').textContent = currentWeek.label;
+
+    // 1. 今日のタスク一覧の描画（今日やるべきことのみを表示）
     const todayListEl = document.getElementById('todayTaskList');
-    const manageListEl = document.getElementById('manageList');
-    
     todayListEl.innerHTML = '';
-    manageListEl.innerHTML = '';
 
-    const catDecor = currentTheme === 'cat' ? '🐾 ' : '';
-    const completeBtnText = currentTheme === 'cat' ? '目標達成だニャ！' : '目標達成！';
+    currentWeek.tasks.forEach((t, index) => {
+      const taskId = `${currentWeek.id}_${index}`;
+      const isDone = (completedTasks[taskId] === todayStr);
 
-    // 1. 今日のタスク一覧の描画
-    MASTER_PLAN.forEach(task => {
-      const prog = taskProgress[task.id] || {};
-      const isDone = prog.status === 'completed';
+      const card = document.createElement('div');
+      card.className = 'subject-card';
+      card.setAttribute('data-subject', t.subject);
 
-      let displayPages = `${task.startP}〜${task.endP}p`;
-      if (task.startP === task.endP) displayPages = `${task.startP}p`;
-
-      const taskCard = document.createElement('div');
-      taskCard.className = 'today-card';
+      const completeBtnText = currentTheme === 'cat' ? '目標達成だニャ！ 🐾' : '目標達成！';
+      const completedBadgeText = currentTheme === 'cat' ? '✅ 本日の学習完了だニャ！ 🐾' : '✅ 本日の学習完了！';
 
       if (isDone) {
-        taskCard.innerHTML = `
-          <div class="today-header">
-            <div>
-              <span class="subject-tag">${task.subject}</span>
-              <div class="today-title">${task.title}</div>
-            </div>
+        card.innerHTML = `
+          <div class="subj-header">
+            <span class="subj-badge">${t.subject}</span>
+            <span class="subj-material-name">${t.material}</span>
           </div>
           <div class="completed-box">
-            <div class="completed-badge">✅ ${catDecor}達成済み！（${displayPages}）</div>
-            <div class="completed-actions">
-              <button class="btn-undo" onclick="undoTask('${task.id}')">取り消す</button>
-            </div>
+            <div class="completed-badge">${completedBadgeText}</div>
+            <button class="btn-undo" onclick="toggleTaskComplete('${taskId}')">取り消す</button>
           </div>
         `;
       } else {
-        taskCard.innerHTML = `
-          <div class="today-header">
-            <div>
-              <span class="subject-tag">${task.subject}</span>
-              <div class="today-title">${task.title}</div>
-            </div>
-            <div class="today-badge">${displayPages}</div>
+        card.innerHTML = `
+          <div class="subj-header">
+            <span class="subj-badge">${t.subject}</span>
+            <span class="subj-material-name">${t.material}</span>
           </div>
-          <div class="method-desc">${task.method}</div>
-          <div class="action-group">
-            <button class="btn-complete" onclick="completeTask('${task.id}')">${completeBtnText}</button>
-          </div>
+          <div class="subj-action-title">目安: ${t.target}</div>
+          <div class="subj-instruction">${t.action}</div>
+          <button class="btn-complete" onclick="toggleTaskComplete('${taskId}')">${completeBtnText}</button>
         `;
       }
-      todayListEl.appendChild(taskCard);
+      todayListEl.appendChild(card);
     });
 
-    // 2. 全体進捗ビューの描画
-    let totalTasks = MASTER_PLAN.length;
-    let completedCount = Object.keys(taskProgress).length;
-    let overallPercent = Math.round((completedCount / totalTasks) * 100);
+    // 2. 22週間ロードマップ一覧の描画
+    const timelineEl = document.getElementById('scheduleTimeline');
+    timelineEl.innerHTML = '';
 
-    const overallCard = document.createElement('div');
-    overallCard.className = 'card';
-    overallCard.innerHTML = `
-      <div class="card-subtitle">TOTAL PROGRESS</div>
-      <div class="card-title">9月の学習計画 達成度</div>
-      <div class="progress-bar-bg" style="height: 12px;"><div class="progress-bar-fill" style="width: ${overallPercent}%"></div></div>
-      <div class="manage-meta" style="margin-top: 8px;">
-        <span>完了: ${completedCount} / ${totalTasks} タスク</span>
-        <span><b>${overallPercent}% 達成</b></span>
-      </div>
-    `;
-    manageListEl.appendChild(overallCard);
-  }
+    masterSchedule.forEach(w => {
+      const isCurrent = (w.id === currentWeek.id);
+      const item = document.createElement('div');
+      item.className = 'timeline-item' + (isCurrent ? ' active-week' : '');
 
-  function saveAndScheduleNotification() {
-    if (!("Notification" in window)) {
-      alert("お使いのブラウザは通知に対応していません。");
-      return;
-    }
-    Notification.requestPermission().then(permission => {
-      if (permission === "granted") {
-        const selectedTime = document.getElementById('notifTime').value;
-        localStorage.setItem('studyflow_notif_time', selectedTime);
-        alert(`毎日 ${selectedTime} にリマインダーを設定しました！`);
-      }
+      let taskSummary = w.tasks.map(t => `• <b>[${t.subject}]</b> ${t.action}`).join('<br>');
+
+      item.innerHTML = `
+        <div class="timeline-title">${w.label} ${isCurrent ? '👈 (今ここ)' : ''}</div>
+        <div class="timeline-desc" style="margin-bottom:6px;">期間: ${w.start} 〜 ${w.end}</div>
+        <div class="timeline-desc">${taskSummary}</div>
+      `;
+      timelineEl.appendChild(item);
     });
   }
 
+  // PWAサービスワーカー
   if ('serviceWorker' in navigator) {
     const swCode = `self.addEventListener('fetch', function(e) {});`;
     const blob = new Blob([swCode], { type: 'text/javascript' });
-    navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+    const swUrl = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(swUrl).catch(() => {});
   }
 
   setTheme(currentTheme);
+  scheduleNotification();
   render();
 </script>
 
