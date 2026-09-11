@@ -72,25 +72,10 @@
     body { background: var(--bg-color); color: var(--text-main); min-height: 100vh; padding-bottom: 90px; display: flex; justify-content: center; }
     .app-container { width: 100%; max-width: 600px; padding: 16px; }
 
-    header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding-top: 8px; }
+    header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; padding-top: 8px; }
     header .logo-icon { background: #fef3c7; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
     header .title-sub { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
     header h1 { font-size: 1.2rem; font-weight: 700; color: var(--text-main); }
-
-    /* カウントダウンバナー */
-    .countdown-banner {
-      background: linear-gradient(135deg, #ff7e5f, #feb47b);
-      color: white;
-      border-radius: var(--card-radius);
-      padding: 12px 16px;
-      margin-bottom: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 700;
-      box-shadow: 0 4px 12px rgba(255, 126, 95, 0.25);
-    }
-    .countdown-banner .days { font-size: 1.4rem; background: rgba(255,255,255,0.25); padding: 2px 10px; border-radius: 8px; }
 
     /* タブ切り替え制御 */
     .tab-content { display: none; }
@@ -99,6 +84,7 @@
     /* カード・枠組み */
     .card { position: relative; background: var(--card-bg); border-radius: var(--card-radius); padding: 20px; margin-bottom: 16px; border: 1px solid var(--border-color); box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
     
+    /* ネコ耳の装飾 */
     .card::before {
       content: '🐾';
       display: var(--cat-ear-display);
@@ -117,12 +103,17 @@
     .opt-btn { flex: 1; padding: 10px 4px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-muted); font-size: 0.8rem; font-weight: 700; cursor: pointer; text-align: center; }
     .opt-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
 
+    /* フェーズ案内カード */
+    .phase-banner { background: var(--primary-light); border: 1px solid var(--primary); border-radius: var(--card-radius); padding: 14px; margin-bottom: 16px; font-size: 0.85rem; }
+    .phase-banner-title { font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+
     /* 今日のタスクカード */
     .today-card { position: relative; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-    .today-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .today-title { font-size: 1rem; font-weight: 700; color: var(--text-main); }
-    .today-badge { font-size: 0.85rem; font-weight: 700; color: var(--primary); background: var(--primary-light); padding: 4px 10px; border-radius: 6px; }
-    
+    .today-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 8px; }
+    .today-title { font-size: 0.95rem; font-weight: 700; color: var(--text-main); }
+    .today-badge { font-size: 0.8rem; font-weight: 700; color: var(--primary); background: var(--primary-light); padding: 4px 10px; border-radius: 6px; white-space: nowrap; }
+    .today-guide { font-size: 0.8rem; color: var(--text-muted); background: var(--input-bg); padding: 8px 10px; border-radius: 8px; margin-bottom: 12px; line-height: 1.4; }
+
     .action-group { display: flex; gap: 8px; }
     .btn-complete { flex: 2; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: transform 0.1s; }
     .btn-complete:active { transform: scale(0.98); }
@@ -140,7 +131,6 @@
     input, select { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); font-size: 0.9rem; outline: none; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .btn-primary { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 8px; }
-    .btn-danger-light { width: 100%; padding: 10px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 12px; }
 
     /* 進捗管理 */
     .manage-item { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--card-radius); padding: 16px; margin-bottom: 12px; }
@@ -190,47 +180,45 @@
   <header>
     <div class="logo-icon" id="appLogo">🎓</div>
     <div>
-      <div class="title-sub">STUDYFLOW</div>
-      <h1 id="appTitle">期末テスト攻略ナビ</h1>
+      <div class="title-sub">STUDYFLOW - 期末テスト攻略</div>
+      <h1 id="appTitle">毎日の勉強ナビ</h1>
     </div>
   </header>
 
-  <!-- カウントダウンバナー -->
-  <div class="countdown-banner">
-    <span>🎯 期末テスト（2/12）まで</span>
-    <span class="days" id="countdownDays">残り -- 日</span>
-  </div>
-
   <!-- タブ1: 今日 -->
   <div id="tab-today" class="tab-content active">
+    <div id="phaseBanner" class="phase-banner"></div>
+
     <div class="card">
       <div class="card-subtitle">TODAY'S CONDITION</div>
       <div class="card-title">今日はどれくらいできそう？</div>
-      <div class="card-desc">体調やスケジュールに合わせて変更できます。</div>
+      <div class="card-desc">体調に合わせてペース調整できます。継続が最優先！</div>
       <div class="options-grid">
         <button id="btnPaceLight" class="opt-btn" onclick="setGlobalPace('light')">少なめ</button>
-        <button id="btnPaceNormal" class="opt-btn" onclick="setGlobalPace('normal')">普通（標準）</button>
+        <button id="btnPaceNormal" class="opt-btn" onclick="setGlobalPace('normal')">普通（基本）</button>
         <button id="btnPaceHeavy" class="opt-btn" onclick="setGlobalPace('heavy')">多め</button>
       </div>
     </div>
 
-    <div class="card-subtitle" style="margin-left: 4px; margin-bottom: 8px;">TODAY'S GOAL</div>
+    <div class="card-subtitle" style="margin-left: 4px; margin-bottom: 8px;">TODAY'S TASKS</div>
     <div id="todayTaskList"></div>
   </div>
 
   <!-- タブ2: 進捗 -->
   <div id="tab-progress" class="tab-content">
-    <div class="card-subtitle" style="margin-left: 4px; margin-bottom: 8px;">ALL SUBJECTS PROGRESS</div>
+    <div class="card-subtitle" style="margin-left: 4px; margin-bottom: 8px;">PROGRESS MAP</div>
     <div id="manageList"></div>
+    <button class="btn-primary" style="background:#64748b; margin-top:20px;" onclick="resetToDefaultPlan()">計画を初期化（9月11日開始に戻す）</button>
   </div>
 
   <!-- タブ3: 教材追加 -->
   <div id="tab-add" class="tab-content">
     <div class="card">
-      <div class="card-title">新しい教材を追加</div>
+      <div class="card-title">追加の教材を登録</div>
+      <div class="card-desc">手動で計画を追加したい場合はここから追加できます。</div>
       <div class="form-group">
         <label>教材名</label>
-        <input type="text" id="title" placeholder="例: 日本史 ワーク">
+        <input type="text" id="title" placeholder="例: 漢検テキスト">
       </div>
       <div class="grid-2">
         <div class="form-group">
@@ -239,12 +227,12 @@
         </div>
         <div class="form-group">
           <label>目標ページ</label>
-          <input type="number" id="targetP" placeholder="例: 120">
+          <input type="number" id="targetP" placeholder="例: 100">
         </div>
       </div>
       <div class="form-group">
         <label>達成期限</label>
-        <input type="date" id="deadline" value="2027-02-12">
+        <input type="date" id="deadline">
       </div>
       <button class="btn-primary" onclick="addSubject()">追加して計算する</button>
     </div>
@@ -271,12 +259,6 @@
       </div>
       <button class="btn-primary" onclick="saveAndScheduleNotification()">設定を保存する</button>
     </div>
-
-    <div class="card">
-      <div class="card-title">🔄 データ初期化</div>
-      <div class="card-desc">期末テスト計画の初期状態（13教材）にリセットします。</div>
-      <button class="btn-danger-light" onclick="resetToDefaultPlan()">13教材の初期計画にリセット</button>
-    </div>
   </div>
 </div>
 
@@ -301,28 +283,27 @@
 </div>
 
 <script>
-  // 期末テスト用に最適化された全13教材の初期データセット
-  const DEFAULT_PLAN = [
-    // 1. 学校ワーク
-    { id: 101, title: '【学校ワーク】国語', currentP: 4, targetP: 160, deadline: '2026-12-13', completedDate: null, lastCompletedPages: 0 },
-    { id: 102, title: '【学校ワーク】数学', currentP: 14, targetP: 127, deadline: '2026-12-13', completedDate: null, lastCompletedPages: 0 },
-    { id: 103, title: '【学校ワーク】理科', currentP: 10, targetP: 137, deadline: '2026-12-13', completedDate: null, lastCompletedPages: 0 },
-    { id: 104, title: '【学校ワーク】英語', currentP: 2, targetP: 161, deadline: '2026-12-13', completedDate: null, lastCompletedPages: 0 },
-    
-    // 2. ☆問題集（基礎・補強）
-    { id: 105, title: '【☆問題集】社会・地理', currentP: 4, targetP: 127, deadline: '2026-12-20', completedDate: null, lastCompletedPages: 0 },
-    { id: 106, title: '【☆問題集】社会・歴史', currentP: 1, targetP: 127, deadline: '2026-12-20', completedDate: null, lastCompletedPages: 0 },
-    { id: 107, title: '【☆問題集】理科', currentP: 6, targetP: 127, deadline: '2026-12-31', completedDate: null, lastCompletedPages: 0 },
-    { id: 108, title: '【☆問題集】英語', currentP: 4, targetP: 135, deadline: '2026-12-31', completedDate: null, lastCompletedPages: 0 },
-    
-    // 3. ☆☆問題集（発展・特訓）
-    { id: 109, title: '【☆☆問題集】数学', currentP: 8, targetP: 112, deadline: '2027-01-14', completedDate: null, lastCompletedPages: 0 },
-    { id: 110, title: '【☆☆問題集】国語・国文法', currentP: 2, targetP: 104, deadline: '2027-01-14', completedDate: null, lastCompletedPages: 0 },
-    { id: 111, title: '【☆☆問題集】国語・古文', currentP: 2, targetP: 80, deadline: '2027-01-14', completedDate: null, lastCompletedPages: 0 },
-    { id: 112, title: '【☆☆問題集】国語・読解', currentP: 4, targetP: 112, deadline: '2027-01-14', completedDate: null, lastCompletedPages: 0 }
+  // プログラムに完全組み込みされた学習計画（2026/09/11〜2027/02/12）
+  const DEFAULT_SUBJECTS = [
+    { id: 101, title: '学校ワーク（国語）', startP: 4, currentP: 4, targetP: 160, deadline: '2026-12-13', guide: '教科書の既習文章の漢字・語句確認から進めましょう。' },
+    { id: 102, title: '学校ワーク（数学）', startP: 14, currentP: 14, targetP: 127, deadline: '2026-12-13', guide: '教科書例題を確認→ワークの基礎計算問題を中心に。' },
+    { id: 103, title: '学校ワーク（理科）', startP: 10, currentP: 10, targetP: 137, deadline: '2026-12-13', guide: '教科書を読み、要点を自分の言葉で説明してから演習。' },
+    { id: 104, title: '学校ワーク（英語）', startP: 2, currentP: 2, targetP: 161, deadline: '2026-12-13', guide: '単語・基本文型を頭に入れてからワークを解く。' },
+    { id: 105, title: '社会・地理☆問題集', startP: 4, currentP: 4, targetP: 127, deadline: '2026-12-20', guide: '学校ワークがないため主軸。教科書インプット＋☆問題集。' },
+    { id: 106, title: '社会・歴史☆問題集', startP: 1, currentP: 1, targetP: 127, deadline: '2026-12-20', guide: '9/14〜本格始動。時代の流れ・図版もチェック。' },
+    { id: 107, title: '理科☆問題集（基礎・補強）', startP: 6, currentP: 6, targetP: 127, deadline: '2026-12-31', guide: '9/14〜学校ワークと並行して基礎固め。' },
+    { id: 108, title: '英語☆問題集（基礎・補強）', startP: 4, currentP: 4, targetP: 135, deadline: '2026-12-31', guide: '9/14〜文法と単語の穴を埋める。' },
+    { id: 109, title: '数学☆☆問題集（発展）', startP: 8, currentP: 8, targetP: 112, deadline: '2026-12-31', guide: '11/1〜開始。ワーク正答率90%以上を目安に挑戦！' },
+    { id: 110, title: '国語・国文法☆☆問題集', startP: 2, currentP: 2, targetP: 104, deadline: '2026-12-31', guide: '11/9〜開始。識別問題や文法規則の特訓。' },
+    { id: 111, title: '国語・古文☆☆問題集', startP: 2, currentP: 2, targetP: 80, deadline: '2026-12-31', guide: '11/23〜開始。歴史的仮名遣いと重要単語を意識。' },
+    { id: 112, title: '国語・読解☆☆問題集', startP: 4, currentP: 4, targetP: 112, deadline: '2026-12-31', guide: '12/7〜開始。根拠を本文から探す練習。' }
   ];
 
-  let subjects = JSON.parse(localStorage.getItem('studyflow_subjects')) || DEFAULT_PLAN;
+  let subjects = JSON.parse(localStorage.getItem('studyflow_subjects') || 'null');
+  if (!subjects) {
+    subjects = JSON.parse(JSON.stringify(DEFAULT_SUBJECTS));
+  }
+
   let globalPace = localStorage.getItem('studyflow_global_pace') || 'normal';
   let currentTheme = localStorage.getItem('studyflow_theme') || 'light';
   let notifTimerId = null;
@@ -335,12 +316,12 @@
     localStorage.setItem('studyflow_theme', currentTheme);
   }
 
-  function updateCountdown() {
-    const testDate = new Date('2027-02-12T00:00:00');
-    const today = new Date();
-    today.setHours(0,0,0,0);
-    const diffDays = Math.ceil((testDate - today) / (1000 * 60 * 60 * 24));
-    document.getElementById('countdownDays').textContent = diffDays > 0 ? `残り ${diffDays} 日` : '当日！';
+  function resetToDefaultPlan() {
+    if (confirm('学習計画を初期状態（2026年9月11日開始計画）に戻しますか？')) {
+      subjects = JSON.parse(JSON.stringify(DEFAULT_SUBJECTS));
+      saveSubjects();
+      render();
+    }
   }
 
   /* テーマ設定 */
@@ -351,18 +332,19 @@
     if (theme === 'dark') {
       document.body.classList.add('theme-dark');
       document.getElementById('appLogo').textContent = '🎓';
-      document.getElementById('appTitle').textContent = '期末テスト攻略ナビ';
+      document.getElementById('appTitle').textContent = '毎日の勉強ナビ';
     } else if (theme === 'cat') {
       document.body.classList.add('theme-cat');
       document.getElementById('appLogo').textContent = '🐾';
-      document.getElementById('appTitle').textContent = 'ニャンと合格ナビ';
+      document.getElementById('appTitle').textContent = 'ニャンと勉強ナビ';
     } else {
       document.getElementById('appLogo').textContent = '🎓';
-      document.getElementById('appTitle').textContent = '期末テスト攻略ナビ';
+      document.getElementById('appTitle').textContent = '毎日の勉強ナビ';
     }
 
     saveSubjects();
     updateThemeButtonsUI();
+    render(); // テーマ切り替え時に完了ボタン等のテキストを即座に再描画
   }
 
   function updateThemeButtonsUI() {
@@ -410,7 +392,7 @@
 
     notifTimerId = setTimeout(() => {
       new Notification("StudyFlow", {
-        body: currentTheme === 'cat' ? "期末テストに向けて今日の勉強タイムだニャン！🐾" : "今日の期末テスト対策タスクの時間です！🔥",
+        body: currentTheme === 'cat' ? "今日の勉強タイムだニャン！🐾" : "今日の学習タスクの時間です！進捗をチェックしましょう🔥",
         icon: "📚"
       });
       scheduleNotification();
@@ -435,15 +417,6 @@
     });
   }
 
-  function resetToDefaultPlan() {
-    if (confirm('期末テストの13教材の初期計画にリセットしますか？現在の進捗データは書き換えられます。')) {
-      subjects = JSON.parse(JSON.stringify(DEFAULT_PLAN));
-      saveSubjects();
-      render();
-      alert('13教材の学習計画にリセットしました！');
-    }
-  }
-
   function addSubject() {
     const title = document.getElementById('title').value.trim();
     const currentP = parseInt(document.getElementById('currentP').value);
@@ -455,7 +428,7 @@
       return;
     }
 
-    subjects.push({ id: Date.now(), title, currentP, targetP, deadline, completedDate: null, lastCompletedPages: 0 });
+    subjects.push({ id: Date.now(), title, startP: currentP, currentP, targetP, deadline, completedDate: null, lastCompletedPages: 0, guide: '自分のペースで着実に進めましょう。' });
     saveSubjects();
     render();
     document.getElementById('title').value = '';
@@ -549,10 +522,29 @@
     document.getElementById('btnPaceHeavy').className = 'opt-btn' + (globalPace === 'heavy' ? ' active' : '');
   }
 
+  function renderPhaseBanner() {
+    const banner = document.getElementById('phaseBanner');
+    const todayStr = getTodayString();
+
+    if (todayStr >= '2027-02-01') {
+      banner.innerHTML = `<div class="phase-banner-title">🔥 直前最終仕上げ期（テスト当日: 2月12日）</div>新しい問題には手を出さず、間違いノートと重要用語の暗記を徹底周回！`;
+    } else if (todayStr >= '2027-01-22') {
+      banner.innerHTML = `<div class="phase-banner-title">⚡️ テスト直前モード発動中！（発表日: 1月22日）</div>テスト範囲の提出物を即完了させ、×印問題の3周目に入りましょう！`;
+    } else if (todayStr >= '2027-01-01') {
+      banner.innerHTML = `<div class="phase-banner-title">🎯 総復習＆実践演習期</div>ミス問題（××印）の解き直しと50分タイマーでの章末テスト演習！`;
+    } else if (todayStr >= '2026-12-01') {
+      banner.innerHTML = `<div class="phase-banner-title">📘 ワーク1周目完了＆2周目突入期</div>全教科ワーク完了を目指し、ミス問題の総解き直しを実施。`;
+    } else if (todayStr >= '2026-11-01') {
+      banner.innerHTML = `<div class="phase-banner-title">🚀 応用・発展問題集への挑戦期</div>ワーク完了に近づけつつ、数学・国語の☆☆問題集を開始！`;
+    } else {
+      banner.innerHTML = `<div class="phase-banner-title">🌱 基礎習慣化＆インプット始動期</div>「教科書インプット → 要点説明 → ワーク基礎解き」のサイクルを確立しよう！`;
+    }
+  }
+
   function render() {
-    updateCountdown();
     updatePaceButtonsUI();
     updateThemeButtonsUI();
+    renderPhaseBanner();
 
     const todayListEl = document.getElementById('todayTaskList');
     const manageListEl = document.getElementById('manageList');
@@ -561,18 +553,23 @@
     manageListEl.innerHTML = '';
 
     if (subjects.length === 0) {
-      todayListEl.innerHTML = '<div class="empty-state">教材がありません。「設定」から初期計画をリセットしてください。</div>';
-      manageListEl.innerHTML = '<div class="empty-state">教材がありません。</div>';
+      todayListEl.innerHTML = '<div class="empty-state">登録された教材がありません。<br>下部メニューの「設定」から計画を初期化できます。</div>';
+      manageListEl.innerHTML = '<div class="empty-state">登録された教材がありません。</div>';
       return;
     }
 
     const todayStr = getTodayString();
+    const btnLabel = currentTheme === 'cat' ? '目標達成だニャ！' : '目標達成！';
 
     subjects.forEach(sub => {
       const isCompletedToday = (sub.completedDate === todayStr);
       const isAllFinished = (sub.currentP > sub.targetP);
       const { remainingDays, todayPages } = calculatePacing(sub);
-      const progressPercent = Math.min(100, Math.round(((sub.currentP - 1) / sub.targetP) * 100));
+      
+      const startP = sub.startP || 1;
+      const totalP = Math.max(1, sub.targetP - startP + 1);
+      const doneP = Math.max(0, sub.currentP - startP);
+      const progressPercent = Math.min(100, Math.round((doneP / totalP) * 100));
 
       const todayStartP = sub.currentP;
       const todayEndP = Math.min(sub.targetP, todayStartP + todayPages - 1);
@@ -586,7 +583,7 @@
         todayItem.innerHTML = `
           <div class="today-title">${sub.title}</div>
           <div class="completed-box">
-            <div class="completed-badge">🎉 1周目全ページ達成！</div>
+            <div class="completed-badge">🎉 計画全ページ達成！</div>
             <button class="btn-undo" onclick="undoTask(${sub.id})">取り消す</button>
           </div>
         `;
@@ -607,8 +604,9 @@
             <div class="today-title">${sub.title}</div>
             <div class="today-badge">p.${todayStartP} 〜 ${todayEndP} (${todayPages}p)</div>
           </div>
+          ${sub.guide ? `<div class="today-guide">💡 ${sub.guide}</div>` : ''}
           <div class="action-group">
-            <button class="btn-complete" onclick="completeTodayTask(${sub.id}, ${todayPages})">${currentTheme === 'cat' ? '目標達成だニャ！' : '目標達成！'}</button>
+            <button class="btn-complete" onclick="completeTodayTask(${sub.id}, ${todayPages})">${btnLabel}</button>
             <button class="btn-partial" onclick="partialCompleteTask(${sub.id}, ${todayStartP}, ${todayEndP})">ここまでやった</button>
           </div>
         `;
@@ -641,6 +639,10 @@
 
   setTheme(currentTheme);
   scheduleNotification();
+
+  const defaultDeadline = new Date();
+  defaultDeadline.setDate(defaultDeadline.getDate() + 30);
+  document.getElementById('deadline').value = defaultDeadline.toISOString().split('T')[0];
   render();
 </script>
 
